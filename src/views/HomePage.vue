@@ -801,7 +801,13 @@ const selectedCategory = ref<ProjectCategory | null>(null);
 const selectedDifficulty = ref<DifficultyLevel | null>(null);
 
 const filteredProjects = computed(() => {
-  return projects.filter((project) => {
+  const difficultyWeight = {
+    Beginner: 0,
+    Intermediate: 1,
+    Advanced: 2,
+  };
+
+  const result = projects.filter((project) => {
     const matchesSearch =
       project.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       project.description
@@ -815,6 +821,13 @@ const filteredProjects = computed(() => {
       project.difficulty === selectedDifficulty.value;
 
     return matchesSearch && matchesCategory && matchesDifficulty;
+  });
+
+  return result.sort((a, b) => {
+    return (
+      (difficultyWeight[a.difficulty] || 0) -
+      (difficultyWeight[b.difficulty] || 0)
+    );
   });
 });
 
