@@ -88,7 +88,7 @@ onMounted(() => {
     // Apply user votes to the current state (incrementing them visually for the user)
     // Note: In a real app, the backend would already include this.
     // Here we simulate the user's vote being "added" to the base count if they already voted.
-    Object.entries(userVotes.value).forEach(([pollId, optionId]) => {
+    Object.entries(userVotes.value).forEach(([pollId, _]) => {
       const poll = polls.value.find((p) => p.id === pollId);
       if (poll) {
         // We assume the mocked "base" votes didn't include "me" yet, or we just show the state as is.

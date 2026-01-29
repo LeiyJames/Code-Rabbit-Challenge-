@@ -478,7 +478,7 @@ watch(selectedContactId, () => {
           <!-- Date Divider logic could go here -->
 
           <div
-            v-for="(msg, index) in currentConversation?.messages || []"
+            v-for="msg in currentConversation?.messages || []"
             :key="msg.id"
             class="flex flex-col"
             :class="msg.senderId === 'me' ? 'items-end' : 'items-start'"
