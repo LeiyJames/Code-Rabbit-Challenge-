@@ -9,6 +9,7 @@ import StopwatchTimerProject from "@/projects/StopwatchTimerProject.vue";
 import ChartPlaygroundProject from "@/projects/ChartPlaygroundProject.vue";
 import BasketballScoreboardProject from "@/projects/BasketballScoreboardProject.vue";
 import BugReportGeneratorProject from "@/projects/BugReportGeneratorProject.vue";
+import QaRegressionChecklistProject from "@/projects/QaRegressionChecklistProject.vue";
 import TestCaseBuilderProject from "@/projects/TestCaseBuilderProject.vue";
 import ApiSimulatorProject from "@/projects/ApiSimulatorProject.vue";
 import PhishingDetectorProject from "@/projects/PhishingDetectorProject.vue";
@@ -1220,6 +1221,85 @@ Expected: \${tc.expectedResult}\`
   flags: string[]       // Educational indicators
   verdict: boolean | null
 }`,
+      },
+    ],
+  },
+  {
+    slug: "qa-regression-checklist",
+    name: "QA Test Flow",
+    description:
+      "Orchestrate regression testing with precision. Manage priorities, track real-time coverage, and visualize project health.",
+    techStack: [
+      "Vue 3",
+      "TypeScript",
+      "LocalStorage",
+      "Priority Logic",
+      "Analytics",
+    ],
+    component: QaRegressionChecklistProject,
+    category: "tool",
+    difficulty: "Intermediate",
+    concepts: [
+      "Regression Testing",
+      "Test Flow Management",
+      "Data Visualization",
+      "Priority Logic",
+      "Bulk Actions",
+    ],
+    whatThisDemonstrates: [
+      "A practical QA workflow tool: track per-module coverage and bug notes",
+      "Local-first persistence for quick iteration without a backend",
+      "Exporting structured data to spreadsheet-friendly CSV",
+      "Search + filters for large regression suites",
+      "Mobile-friendly touch targets (min 44px) and fast editing",
+    ],
+    codePreview: [
+      {
+        title: "LocalStorage Persistence",
+        language: "typescript",
+        code: `const STORAGE_KEY = 'qa-regression-checklist-v1'
+
+function persist(state: unknown) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
+function load(): unknown | null {
+  const raw = localStorage.getItem(STORAGE_KEY)
+  return raw ? JSON.parse(raw) : null
+}`,
+      },
+      {
+        title: "CSV Export",
+        language: "typescript",
+        code: `function csvEscape(value: unknown): string {
+  const str = String(value ?? '')
+  const needsQuotes = /[",\\n\\r]/.test(str)
+  const escaped = str.replace(/"/g, '""')
+  return needsQuotes ? \`"\${escaped}"\` : escaped
+}
+
+function exportCSV(headers: string[], rows: unknown[][]) {
+  const lines = [
+    headers.map(csvEscape).join(','),
+    ...rows.map(r => r.map(csvEscape).join(',')),
+  ]
+  const blob = new Blob(['\\uFEFF' + lines.join('\\n')], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'qa_checklist.csv'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+}`,
+      },
+      {
+        title: "Touch-Friendly Table UI",
+        language: "tailwind",
+        code: `<!-- Inputs with minimum touch target -->
+<input class="min-h-[44px] px-3 py-2 rounded-lg border" />
+<select class="min-h-[44px] px-3 py-2 rounded-lg border" />`,
       },
     ],
   },
