@@ -387,7 +387,7 @@
                     </th>
                     <th
                       scope="col"
-                      class="px-6 py-4 font-semibold tracking-wider text-right w-[100px]"
+                      class="px-6 py-4 font-semibold tracking-wider text-right w-[160px]"
                     >
                       Actions
                     </th>
@@ -416,11 +416,13 @@
                     <td
                       class="px-6 py-4 align-top border-y border-indigo-50/20"
                     >
-                      <input
+                      <textarea
                         v-model="row.testName"
+                        rows="1"
+                        @input="autoResize($event)"
                         placeholder="Enter test name..."
-                        class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-700 font-medium placeholder-slate-300"
-                      />
+                        class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-700 font-medium placeholder-slate-300 resize-none overflow-hidden leading-relaxed"
+                      ></textarea>
                     </td>
 
                     <!-- Priority Cell -->
@@ -515,6 +517,56 @@
                       class="px-6 py-4 align-top text-right first:rounded-l-xl last:rounded-r-xl border-y border-r border-indigo-50/20"
                     >
                       <div class="flex items-center justify-end gap-2">
+                        <div
+                          v-if="!isFiltered"
+                          class="flex items-center gap-1 mr-1"
+                        >
+                          <button
+                            @click="moveRowUp(row.rowId)"
+                            class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors border border-transparent hover:border-indigo-100 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400 disabled:cursor-not-allowed"
+                            :disabled="
+                              rows.findIndex((r) => r.rowId === row.rowId) === 0
+                            "
+                            title="Move Up"
+                          >
+                            <svg
+                              class="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M5 15l7-7 7 7"
+                              ></path>
+                            </svg>
+                          </button>
+                          <button
+                            @click="moveRowDown(row.rowId)"
+                            class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors border border-transparent hover:border-indigo-100 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400 disabled:cursor-not-allowed"
+                            :disabled="
+                              rows.findIndex((r) => r.rowId === row.rowId) ===
+                              rows.length - 1
+                            "
+                            title="Move Down"
+                          >
+                            <svg
+                              class="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 9l-7 7-7-7"
+                              ></path>
+                            </svg>
+                          </button>
+                        </div>
                         <button
                           @click="duplicateRow(row.rowId)"
                           class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors border border-transparent hover:border-indigo-100"
@@ -1416,6 +1468,29 @@ const bugStats = computed(() => {
   );
 });
 
+const isFiltered = computed(() => {
+  return !!(query.value || moduleFilter.value.trim() || statusFilter.value);
+});
+
+function moveRowUp(rowId: string) {
+  const index = rows.value.findIndex((r) => r.rowId === rowId);
+  if (index > 0) {
+    const temp = rows.value[index];
+    rows.value[index] = rows.value[index - 1];
+    rows.value[index - 1] = temp;
+    // value assignment triggers watch -> persist, but let's be safe
+  }
+}
+
+function moveRowDown(rowId: string) {
+  const index = rows.value.findIndex((r) => r.rowId === rowId);
+  if (index < rows.value.length - 1) {
+    const temp = rows.value[index];
+    rows.value[index] = rows.value[index + 1];
+    rows.value[index + 1] = temp;
+  }
+}
+
 function statusPillClass(status: TestStatus): string {
   switch (status) {
     case "pass":
@@ -1436,7 +1511,14 @@ function autoResize(event: Event) {
 }
 
 function csvEscape(value: unknown): string {
-  const str = String(value ?? "");
+  let str = String(value ?? "");
+
+  // Prevent Excel from interpreting fields as formulas (fixes #NAME? errors)
+  // If the cell starts with -, =, +, or @, prepend a tab or single quote to force text mode
+  if (/^[=+\-@]/.test(str)) {
+    str = "'" + str;
+  }
+
   const needsQuotes = /[",\n\r]/.test(str);
   const escaped = str.replace(/"/g, '""');
   return needsQuotes ? `"${escaped}"` : escaped;
