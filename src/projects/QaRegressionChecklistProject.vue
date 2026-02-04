@@ -941,19 +941,40 @@
                 <div
                   v-for="bug in bugStats"
                   :key="bug.rowId"
-                  class="p-4 bg-rose-50 border border-rose-100 rounded-xl"
+                  class="p-4 rounded-xl border transition-colors"
+                  :class="
+                    bug.status === 'blocked'
+                      ? 'bg-amber-50 border-amber-100'
+                      : 'bg-rose-50 border-rose-100'
+                  "
                 >
                   <div class="flex justify-between items-start mb-2">
-                    <span class="font-medium text-sm text-rose-900">{{
-                      bug.testName || "Untitled Test"
-                    }}</span>
                     <span
-                      class="text-xs font-semibold text-rose-600 uppercase bg-rose-200/50 px-2 py-0.5 rounded ml-2 whitespace-nowrap"
+                      class="font-medium text-sm"
+                      :class="
+                        bug.status === 'blocked'
+                          ? 'text-amber-900'
+                          : 'text-rose-900'
+                      "
+                      >{{ bug.testName || "Untitled Test" }}</span
+                    >
+                    <span
+                      class="text-xs font-semibold uppercase px-2 py-0.5 rounded ml-2 whitespace-nowrap"
+                      :class="
+                        bug.status === 'blocked'
+                          ? 'text-amber-600 bg-amber-200/50'
+                          : 'text-rose-600 bg-rose-200/50'
+                      "
                       >{{ bug.module }}</span
                     >
                   </div>
                   <p class="text-sm text-slate-700 font-medium line-clamp-2">
-                    {{ bug.bug || "No description provided" }}
+                    {{
+                      bug.bug ||
+                      (bug.status === "blocked"
+                        ? "Test blocked"
+                        : "No description provided")
+                    }}
                   </p>
                 </div>
               </div>
@@ -1950,7 +1971,7 @@ const healthScore = computed(() => {
 
 const bugStats = computed(() => {
   return rows.value.filter(
-    (r) => r.status === "fail" || (r.status === "blocked" && r.bug),
+    (r) => r.status === "fail" || r.status === "blocked",
   );
 });
 
