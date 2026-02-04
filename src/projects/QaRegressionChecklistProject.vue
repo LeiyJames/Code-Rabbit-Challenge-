@@ -19,6 +19,38 @@
             Orchestrate regression testing with precision. Manage priorities,
             track real-time coverage, and visualize project health.
           </p>
+
+          <!-- Environment & Build Info -->
+          <div class="flex flex-wrap gap-4 mt-4">
+            <div
+              class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all"
+            >
+              <span
+                class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+                >Env:</span
+              >
+              <input
+                v-model="projectMeta.environment"
+                @change="persist"
+                placeholder="e.g. Staging"
+                class="bg-transparent border-none p-0 text-sm font-semibold text-slate-700 placeholder-slate-300 w-24 focus:ring-0"
+              />
+            </div>
+            <div
+              class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all"
+            >
+              <span
+                class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+                >Build:</span
+              >
+              <input
+                v-model="projectMeta.build"
+                @change="persist"
+                placeholder="e.g. v1.0.0"
+                class="bg-transparent border-none p-0 text-sm font-semibold text-slate-700 placeholder-slate-300 w-24 focus:ring-0"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Action Buttons -->
@@ -401,15 +433,41 @@
                   >
                     <!-- Checkbox Cell -->
                     <td
-                      class="px-4 py-4 align-top first:rounded-l-xl border-y border-l border-indigo-50/20 first:border-l"
+                      class="px-4 py-4 align-top first:rounded-l-xl border-y border-l border-indigo-50/20 first:border-l relative group/row"
                     >
-                      <div class="flex items-center h-full pt-1.5">
+                      <div class="flex items-center h-full pt-1.5 gap-3">
                         <input
                           type="checkbox"
                           :checked="selectedIds.has(row.rowId)"
                           @change="toggleSelection(row.rowId)"
                           class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
                         />
+                        <!-- Quick Open Button -->
+                        <button
+                          @click="openTestDetails(row)"
+                          class="md:hidden opacity-0 group-hover/row:opacity-100 transition-opacity p-1 hover:bg-indigo-50 rounded text-indigo-500"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     </td>
 
@@ -418,11 +476,47 @@
                     >
                       <textarea
                         v-model="row.testName"
+                        v-auto-height
                         rows="1"
-                        @input="autoResize($event)"
                         placeholder="Enter test name..."
                         class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-700 font-medium placeholder-slate-300 resize-none overflow-hidden leading-relaxed"
                       ></textarea>
+                      <!-- Tags Display -->
+                      <div
+                        v-if="row.tags && row.tags.length > 0"
+                        class="flex flex-wrap gap-1 mt-2"
+                      >
+                        <span
+                          v-for="tag in row.tags"
+                          :key="tag"
+                          class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 uppercase tracking-wider"
+                        >
+                          {{ tag }}
+                        </span>
+                      </div>
+
+                      <!-- Assignee Display (Mini) -->
+                      <div
+                        v-if="row.assignee"
+                        class="flex items-center gap-1 mt-1"
+                      >
+                        <svg
+                          class="w-3 h-3 text-slate-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          ></path>
+                        </svg>
+                        <span class="text-xs text-slate-500">{{
+                          row.assignee
+                        }}</span>
+                      </div>
                     </td>
 
                     <!-- Priority Cell -->
@@ -447,12 +541,13 @@
                     <td
                       class="px-6 py-4 align-top border-y border-indigo-50/20"
                     >
-                      <input
+                      <textarea
                         v-model="row.module"
-                        list="moduleSuggestions"
+                        v-auto-height
+                        rows="1"
                         placeholder="Module name"
-                        class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-600 placeholder-slate-300"
-                      />
+                        class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-600 placeholder-slate-300 resize-none overflow-hidden leading-relaxed"
+                      ></textarea>
                     </td>
 
                     <td
@@ -461,6 +556,9 @@
                       <div class="relative group/select">
                         <select
                           v-model="row.status"
+                          @change="
+                            logHistory(row, 'Status updated to ' + row.status)
+                          "
                           class="appearance-none cursor-pointer w-full py-1.5 pl-3 pr-8 rounded-lg text-xs font-bold uppercase tracking-wider border-0 ring-1 ring-slate-200 group-hover/select:ring-indigo-200 focus:ring-2 focus:ring-indigo-500 transition-all text-left"
                           :class="statusPillClass(row.status)"
                         >
@@ -495,8 +593,8 @@
                       <div class="relative">
                         <textarea
                           v-model="row.bug"
+                          v-auto-height
                           rows="1"
-                          @input="autoResize($event)"
                           :placeholder="
                             row.status === 'fail'
                               ? 'Describe bug...'
@@ -517,6 +615,26 @@
                       class="px-6 py-4 align-top text-right first:rounded-l-xl last:rounded-r-xl border-y border-r border-indigo-50/20"
                     >
                       <div class="flex items-center justify-end gap-2">
+                        <button
+                          @click="openTestDetails(row)"
+                          class="p-2 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-100"
+                          title="Edit Details"
+                        >
+                          <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                            />
+                          </svg>
+                        </button>
+
                         <div
                           v-if="!isFiltered"
                           class="flex items-center gap-1 mr-1"
@@ -1094,6 +1212,336 @@
           </div>
         </Transition>
       </Teleport>
+      <!-- Test Details Modal -->
+      <Teleport to="body">
+        <Transition
+          enter-active-class="transition duration-300 ease-out"
+          enter-from-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
+          enter-to-class="opacity-100 translate-y-0 md:scale-100"
+          leave-active-class="transition duration-200 ease-in"
+          leave-from-class="opacity-100 translate-y-0 md:scale-100"
+          leave-to-class="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
+        >
+          <div
+            v-if="editingRow"
+            class="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8 bg-slate-900/60 backdrop-blur-sm"
+            @click.self="closeTestDetails"
+          >
+            <div
+              class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden"
+            >
+              <!-- Modal Header -->
+              <div
+                class="p-6 border-b border-slate-100 flex items-start justify-between bg-slate-50/50"
+              >
+                <div class="flex-1 mr-8">
+                  <span
+                    class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 block"
+                    >Test Case Details</span
+                  >
+                  <input
+                    v-model="editingRow.testName"
+                    class="w-full text-xl font-bold bg-transparent border-none p-0 focus:ring-0 text-slate-800 placeholder-slate-400"
+                    placeholder="Test Case Title"
+                  />
+                </div>
+                <button
+                  @click="closeTestDetails"
+                  class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 rounded-full transition-colors"
+                >
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Modal Content -->
+              <div class="flex-1 overflow-y-auto p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <!-- Left Col: Main Info -->
+                  <div class="lg:col-span-2 space-y-6">
+                    <!-- Steps & Results -->
+                    <div class="space-y-4">
+                      <div>
+                        <label
+                          class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2"
+                          >Test Steps</label
+                        >
+                        <textarea
+                          v-model="editingRow.steps"
+                          v-auto-height
+                          rows="3"
+                          class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none transition-shadow"
+                          placeholder="- Step 1&#10;- Step 2&#10;- Step 3"
+                        ></textarea>
+                      </div>
+
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label
+                            class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2"
+                            >Expected Result</label
+                          >
+                          <textarea
+                            v-model="editingRow.expectedResult"
+                            v-auto-height
+                            rows="2"
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                            placeholder="What should happen?"
+                          ></textarea>
+                        </div>
+                        <div>
+                          <label
+                            class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2"
+                            >Actual Result</label
+                          >
+                          <textarea
+                            v-model="editingRow.actualResult"
+                            v-auto-height
+                            rows="2"
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                            placeholder="What actually happened?"
+                          ></textarea>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Notes / Bug -->
+                    <div>
+                      <label
+                        class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2"
+                        >Bugs / Observations</label
+                      >
+                      <textarea
+                        v-model="editingRow.bug"
+                        v-auto-height
+                        rows="2"
+                        class="w-full bg-red-50/50 border border-rose-100 rounded-xl p-4 text-sm text-slate-700 focus:ring-2 focus:ring-rose-500 focus:border-rose-500 resize-none"
+                        placeholder="Describe any bugs found..."
+                      ></textarea>
+                    </div>
+
+                    <!-- History Log -->
+                    <div>
+                      <label
+                        class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3"
+                        >Activity Log</label
+                      >
+                      <div
+                        class="bg-indigo-50/30 rounded-xl border border-indigo-50 p-4 max-h-40 overflow-y-auto space-y-3"
+                      >
+                        <div
+                          v-if="
+                            !editingRow.history ||
+                            editingRow.history.length === 0
+                          "
+                          class="text-xs text-slate-400 italic"
+                        >
+                          No history recorded yet.
+                        </div>
+                        <div
+                          v-else
+                          v-for="(entry, idx) in [
+                            ...(editingRow.history || []),
+                          ].reverse()"
+                          :key="idx"
+                          class="flex gap-3 text-sm"
+                        >
+                          <div
+                            class="text-xs font-mono text-slate-400 shrink-0 pt-0.5"
+                          >
+                            {{
+                              new Date(entry.date).toLocaleString(undefined, {
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            }}
+                          </div>
+                          <div>
+                            <span class="font-bold text-slate-700 text-xs">{{
+                              entry.by
+                            }}</span>
+                            <span class="text-slate-600 text-xs">
+                              {{ entry.action }}</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Right Col: Meta -->
+                  <div class="space-y-6">
+                    <!-- Status Card -->
+                    <div
+                      class="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-4"
+                    >
+                      <div>
+                        <label
+                          class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"
+                          >Status</label
+                        >
+                        <select
+                          v-model="editingRow.status"
+                          @change="
+                            logHistory(
+                              editingRow,
+                              'Status changed to ' + editingRow.status,
+                            )
+                          "
+                          class="w-full rounded-xl border-slate-200 font-bold uppercase tracking-wide focus:ring-2 focus:ring-indigo-500 text-sm"
+                          :class="statusPillClass(editingRow.status)"
+                        >
+                          <option value="untested">Untested</option>
+                          <option value="pass">PASS</option>
+                          <option value="fail">FAIL</option>
+                          <option value="blocked">BLOCKED</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label
+                          class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"
+                          >Priority</label
+                        >
+                        <div
+                          class="flex bg-white rounded-lg p-1 border border-slate-200"
+                        >
+                          <button
+                            v-for="p in priorities"
+                            :key="p"
+                            @click="
+                              editingRow.priority = p;
+                              logHistory(
+                                editingRow,
+                                'Priority changed to ' + p,
+                              );
+                            "
+                            class="flex-1 py-1.5 text-xs font-bold uppercase rounded-md transition-all"
+                            :class="
+                              editingRow.priority === p
+                                ? p === 'high'
+                                  ? 'bg-rose-100 text-rose-700'
+                                  : p === 'medium'
+                                    ? 'bg-amber-100 text-amber-700'
+                                    : 'bg-slate-100 text-slate-700'
+                                : 'text-slate-400 hover:text-slate-600'
+                            "
+                          >
+                            {{ p }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Assignee & Time -->
+                    <div
+                      class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-4"
+                    >
+                      <div>
+                        <label
+                          class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"
+                          >Assignee</label
+                        >
+                        <input
+                          v-model="editingRow.assignee"
+                          class="w-full text-sm border-slate-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="e.g. John Doe"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"
+                          >Time Spent (min)</label
+                        >
+                        <input
+                          type="number"
+                          v-model.number="editingRow.timeSpent"
+                          class="w-full text-sm border-slate-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div>
+                      <label
+                        class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2"
+                        >Tags</label
+                      >
+                      <div class="flex flex-wrap gap-2 mb-2">
+                        <span
+                          v-for="tag in editingRow.tags"
+                          :key="tag"
+                          class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 group"
+                        >
+                          {{ tag }}
+                          <button
+                            @click="removeTag(tag)"
+                            class="ml-1.5 text-indigo-400 hover:text-indigo-900 focus:outline-none"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      </div>
+                      <div class="relative">
+                        <input
+                          v-model="newTagInput"
+                          @keydown.enter.prevent="addTag"
+                          class="w-full text-sm border-slate-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 pr-10"
+                          placeholder="Add tag..."
+                        />
+                        <button
+                          @click="addTag"
+                          class="absolute right-2 top-1.5 text-indigo-600 hover:text-indigo-800"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M12 4v16m8-8H4"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal Footer -->
+              <div
+                class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end"
+              >
+                <button
+                  @click="closeTestDetails"
+                  class="px-6 py-2 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </Teleport>
     </div>
   </div>
 </template>
@@ -1104,6 +1552,12 @@ import { computed, onMounted, ref, watch } from "vue";
 type TestStatus = "untested" | "pass" | "fail" | "blocked";
 type TestPriority = "high" | "medium" | "low";
 
+interface ChecklistHistory {
+  date: number;
+  action: string;
+  by: string;
+}
+
 interface ChecklistRow {
   rowId: string;
   testName: string;
@@ -1111,13 +1565,25 @@ interface ChecklistRow {
   priority: TestPriority;
   status: TestStatus;
   bug: string;
+  // Extended fields
+  tags: string[];
+  steps: string;
+  expectedResult: string;
+  actualResult: string;
+  assignee: string;
+  timeSpent: number; // minutes
+  history: ChecklistHistory[];
+
   createdAt: number;
   updatedAt: number;
 }
 
 const STORAGE_KEY = "qa-regression-checklist-v1";
 
+const priorities: TestPriority[] = ["low", "medium", "high"];
+
 const rows = ref<ChecklistRow[]>([]);
+const projectMeta = ref({ environment: "", build: "" });
 const currentView = ref<"checklist" | "analytics">("checklist");
 const query = ref("");
 const moduleFilter = ref("");
@@ -1125,6 +1591,8 @@ const statusFilter = ref<"" | TestStatus>("");
 const lastSavedAt = ref<number | null>(null);
 const showClearModal = ref(false);
 const showBulkDeleteModal = ref(false);
+const editingRow = ref<ChecklistRow | null>(null);
+const newTagInput = ref("");
 const animationReady = ref(false);
 const selectedIds = ref(new Set<string>());
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -1187,10 +1655,11 @@ function handleImport(e: Event) {
       const json = JSON.parse(evt.target?.result as string);
       if (Array.isArray(json)) {
         // Basic array import
-        rows.value = json.map((r) => ({ ...createRow(), ...r }));
+        rows.value = json.map((r) => createRow(r));
       } else if (json.rows && Array.isArray(json.rows)) {
         // Backup format
-        rows.value = json.rows.map((r: any) => ({ ...createRow(), ...r }));
+        rows.value = json.rows.map((r: any) => createRow(r));
+        if (json.meta) projectMeta.value = json.meta;
       }
       alert("Import successful!");
       persist();
@@ -1205,8 +1674,9 @@ function handleImport(e: Event) {
 
 function exportJSON() {
   const data = {
-    version: 1,
+    version: 2,
     exportedAt: Date.now(),
+    meta: projectMeta.value,
     rows: rows.value,
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], {
@@ -1249,14 +1719,26 @@ const moduleSuggestions = ref<string[]>([
 
 function createRow(partial?: Partial<ChecklistRow>): ChecklistRow {
   const now = Date.now();
+  // If preserving an existing row, use its createdAt for the default history
+  const creationTime = partial?.createdAt ?? now;
+
   return {
-    rowId: cryptoSafeId(),
+    rowId: partial?.rowId ?? cryptoSafeId(),
     testName: partial?.testName ?? "",
     module: partial?.module ?? "",
     priority: partial?.priority ?? "medium",
     status: partial?.status ?? "untested",
     bug: partial?.bug ?? "",
-    createdAt: partial?.createdAt ?? now,
+    tags: partial?.tags ?? [],
+    steps: partial?.steps ?? "",
+    expectedResult: partial?.expectedResult ?? "",
+    actualResult: partial?.actualResult ?? "",
+    assignee: partial?.assignee ?? "",
+    timeSpent: partial?.timeSpent ?? 0,
+    history: partial?.history ?? [
+      { date: creationTime, action: "Created", by: "System" },
+    ],
+    createdAt: creationTime,
     updatedAt: partial?.updatedAt ?? now,
   };
 }
@@ -1287,6 +1769,10 @@ function duplicateRow(rowId: string) {
     createRow({
       testName: source.testName ? `${source.testName} (Copy)` : "",
       module: source.module,
+      priority: source.priority,
+      tags: [...(source.tags || [])],
+      steps: source.steps,
+      expectedResult: source.expectedResult,
       status: "untested",
       bug: "",
     }),
@@ -1491,6 +1977,44 @@ function moveRowDown(rowId: string) {
   }
 }
 
+function openTestDetails(row: ChecklistRow) {
+  editingRow.value = row;
+}
+
+function closeTestDetails() {
+  editingRow.value = null;
+  persist();
+}
+
+function addTag() {
+  if (!editingRow.value || !newTagInput.value.trim()) return;
+  if (!editingRow.value.tags) editingRow.value.tags = [];
+
+  const tag = newTagInput.value.trim();
+  if (!editingRow.value.tags.includes(tag)) {
+    editingRow.value.tags.push(tag);
+    logHistory(editingRow.value, `Added tag: ${tag}`);
+  }
+  newTagInput.value = "";
+}
+
+function removeTag(tag: string) {
+  if (!editingRow.value || !editingRow.value.tags) return;
+  editingRow.value.tags = editingRow.value.tags.filter((t) => t !== tag);
+  logHistory(editingRow.value, `Removed tag: ${tag}`);
+}
+
+function logHistory(row: ChecklistRow, action: string) {
+  if (!row.history) row.history = [];
+  row.history.push({
+    date: Date.now(),
+    action,
+    by: "User", // Default to 'User' since we don't have auth/session
+  });
+  row.updatedAt = Date.now();
+  persist();
+}
+
 function statusPillClass(status: TestStatus): string {
   switch (status) {
     case "pass":
@@ -1504,11 +2028,16 @@ function statusPillClass(status: TestStatus): string {
   }
 }
 
-function autoResize(event: Event) {
-  const textarea = event.target as HTMLTextAreaElement;
-  textarea.style.height = "auto";
-  textarea.style.height = textarea.scrollHeight + "px";
-}
+const vAutoHeight = {
+  mounted: (el: HTMLElement) => {
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  },
+  updated: (el: HTMLElement) => {
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  },
+};
 
 function csvEscape(value: unknown): string {
   let str = String(value ?? "");
@@ -1574,6 +2103,7 @@ function persist() {
       JSON.stringify({
         version: 1,
         savedAt: lastSavedAt.value,
+        meta: projectMeta.value,
         rows: rows.value,
         moduleSuggestions: moduleSuggestions.value,
       }),
@@ -1591,16 +2121,21 @@ function loadFromStorage() {
       version?: number;
       savedAt?: number;
       rows?: ChecklistRow[];
+      meta?: { environment: string; build: string };
       moduleSuggestions?: string[];
     };
+
+    if (parsed.meta) {
+      projectMeta.value = parsed.meta;
+    }
+
     if (Array.isArray(parsed.rows)) {
-      rows.value = parsed.rows.map((r) => ({
-        ...createRow(),
-        ...r,
-        // Migration: Map old 'testId' to 'testName' if 'testName' is missing
-        testName: r.testName || (r as any).testId || "",
-        rowId: r.rowId || cryptoSafeId(),
-      }));
+      rows.value = parsed.rows.map((r: any) =>
+        createRow({
+          ...r,
+          testName: r.testName || r.testId || "",
+        }),
+      );
     }
     if (
       Array.isArray(parsed.moduleSuggestions) &&
