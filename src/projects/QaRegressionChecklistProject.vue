@@ -1,8 +1,95 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-indigo-50 via-slate-50 to-violet-50 font-sans text-slate-800 p-4 md:p-8"
+    class="min-h-screen bg-gradient-to-br from-indigo-50 via-slate-50 to-violet-50 font-sans text-slate-800 relative"
   >
-    <div class="max-w-7xl mx-auto space-y-8">
+    <!-- Auth Overlay -->
+    <div
+      v-if="!user"
+      class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/30 backdrop-blur-md"
+    >
+      <div
+        class="bg-white/90 backdrop-blur-xl w-full max-w-md p-8 rounded-3xl shadow-2xl border border-white/50 relative overflow-hidden"
+      >
+        <!-- Decor -->
+        <div
+          class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500 rounded-full blur-3xl opacity-20"
+        ></div>
+        <div
+          class="absolute -bottom-24 -left-24 w-48 h-48 bg-violet-500 rounded-full blur-3xl opacity-20"
+        ></div>
+
+        <div class="relative z-10 text-center space-y-6">
+          <div class="space-y-2">
+            <h2
+              class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600"
+            >
+              QA Test Flow
+            </h2>
+            <p class="text-slate-500 text-sm">
+              Sign in to manage your secure regression checklist
+            </p>
+          </div>
+
+          <form @submit.prevent="handleAuth" class="space-y-4 text-left">
+            <div>
+              <label class="text-xs font-bold text-slate-500 uppercase ml-1"
+                >Email</label
+              >
+              <input
+                type="email"
+                v-model="authEmail"
+                required
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                placeholder="you@example.com"
+              />
+            </div>
+            <div>
+              <label class="text-xs font-bold text-slate-500 uppercase ml-1"
+                >Password</label
+              >
+              <input
+                type="password"
+                v-model="authPassword"
+                required
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <div
+              v-if="authMessage"
+              :class="
+                authMessage.type === 'error'
+                  ? 'text-rose-500 bg-rose-50'
+                  : 'text-emerald-500 bg-emerald-50'
+              "
+              class="text-xs p-3 rounded-lg font-medium text-center"
+            >
+              {{ authMessage.text }}
+            </div>
+
+            <button
+              type="submit"
+              :disabled="isLoginLoading"
+              class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{
+                isLoginLoading
+                  ? "Processing..."
+                  : authMode === "login"
+                    ? "Sign In"
+                    : "Create Account"
+              }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="max-w-7xl mx-auto space-y-8 p-4 md:p-8 transition-all duration-500"
+      :class="{ 'blur-md opacity-20 pointer-events-none': !user }"
+    >
       <!-- Header Section -->
       <div
         class="flex flex-col md:flex-row gap-6 md:items-start justify-between"
@@ -54,7 +141,39 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex flex-wrap gap-3">
+        <div class="flex flex-wrap gap-2 items-center">
+          <!-- User Profile & Logout -->
+          <div
+            v-if="user"
+            class="flex items-center gap-2 mr-1 pr-2 border-r border-slate-200"
+          >
+            <div class="text-right hidden sm:block">
+              <div class="text-xs font-bold text-slate-700">
+                {{ user.email?.split("@")[0] }}
+              </div>
+              <div class="text-[10px] text-slate-400">Authenticated</div>
+            </div>
+            <button
+              @click="showLogoutModal = true"
+              class="p-2 text-slate-400 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 rounded-lg transition-colors"
+              title="Sign Out"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+            </button>
+          </div>
+
           <!-- File Input for Import -->
           <input
             type="file"
@@ -66,7 +185,7 @@
 
           <button
             @click="addRow()"
-            class="group relative inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white transition-all duration-200 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-indigo-300 hover:-translate-y-0.5"
+            class="group relative inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-indigo-300 hover:-translate-y-0.5"
             title="Add a new test row"
           >
             <span class="mr-2 text-lg leading-none">+</span> New Test
@@ -74,7 +193,7 @@
 
           <button
             @click="triggerImport"
-            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300"
+            class="inline-flex items-center justify-center px-3 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300"
             title="Restore from JSON backup"
           >
             <svg
@@ -94,29 +213,8 @@
           </button>
 
           <button
-            @click="exportJSON"
-            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300"
-            title="Save backup as JSON"
-          >
-            <svg
-              class="w-4 h-4 mr-2 text-slate-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
-              />
-            </svg>
-            Backup
-          </button>
-
-          <button
             @click="exportCSV"
-            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300"
+            class="inline-flex items-center justify-center px-3 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300"
             title="Export checklist to CSV"
           >
             <svg
@@ -136,11 +234,24 @@
           </button>
 
           <button
-            @click="clearAll"
-            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-rose-600 transition-all duration-200 bg-rose-50 border border-rose-100 rounded-xl hover:bg-rose-100 hover:border-rose-200"
-            title="Clear all rows"
+            @click="exportJSON"
+            class="inline-flex items-center justify-center px-3 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300"
+            title="Save backup as JSON"
           >
-            Clear
+            <svg
+              class="w-4 h-4 mr-2 text-slate-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+              />
+            </svg>
+            Backup
           </button>
         </div>
       </div>
@@ -558,7 +669,8 @@
                         <select
                           v-model="row.status"
                           @change="
-                            logHistory(row, 'Status updated to ' + row.status)
+                            persist();
+                            logHistory(row, 'Status updated to ' + row.status);
                           "
                           class="appearance-none cursor-pointer w-full py-1.5 pl-3 pr-8 rounded-lg text-xs font-bold uppercase tracking-wider border-0 ring-1 ring-slate-200 group-hover/select:ring-indigo-200 focus:ring-2 focus:ring-indigo-500 transition-all text-left"
                           :class="statusPillClass(row.status)"
@@ -1227,7 +1339,7 @@
         </Transition>
       </Teleport>
 
-      <!-- Clear Confirmation Modal -->
+      <!-- Logout Confirmation Modal -->
       <Teleport to="body">
         <Transition
           enter-active-class="transition duration-200 ease-out"
@@ -1238,64 +1350,56 @@
           leave-to-class="opacity-0"
         >
           <div
-            v-if="showClearModal"
+            v-if="showLogoutModal"
             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
-            @click.self="showClearModal = false"
+            @click.self="showLogoutModal = false"
           >
             <div
-              class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 transform transition-all scale-100"
+              class="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6 transform transition-all scale-100"
             >
               <div class="flex items-center gap-4 mb-4">
-                <div class="p-3 bg-rose-100 text-rose-600 rounded-full">
+                <div class="p-3 bg-indigo-100 text-indigo-600 rounded-full">
                   <svg
                     class="w-6 h-6"
                     fill="none"
-                    stroke="currentColor"
                     viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    ></path>
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
                   </svg>
                 </div>
                 <div>
-                  <h3 class="text-lg font-bold text-slate-800">
-                    Clear Checklist?
-                  </h3>
+                  <h3 class="text-lg font-bold text-slate-800">Sign Out?</h3>
                   <p class="text-sm text-slate-500">
-                    This action cannot be undone.
+                    Your progress will be saved.
                   </p>
                 </div>
               </div>
 
-              <p class="text-slate-600 mb-6">
-                Are you sure you want to delete all
-                <span class="font-bold text-slate-900">{{ rows.length }}</span>
-                tests? This will permanently remove all test data and reset the
-                dashboard.
-              </p>
-
-              <div class="flex justify-end gap-3">
+              <div class="flex justify-end gap-3 mt-6">
                 <button
-                  @click="showClearModal = false"
+                  @click="showLogoutModal = false"
                   class="px-4 py-2 text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 font-medium transition-colors"
                 >
                   Cancel
                 </button>
                 <button
-                  @click="confirmClear"
-                  class="px-4 py-2 text-white bg-rose-600 rounded-lg hover:bg-rose-700 font-medium shadow-lg shadow-rose-200 transition-all hover:-translate-y-0.5"
+                  @click="confirmLogout"
+                  class="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 font-bold shadow-lg shadow-indigo-200 transition-all hover:shadow-indigo-300 transform hover:-translate-y-0.5"
                 >
-                  Yes, Clear All
+                  Yes, Sign Out
                 </button>
               </div>
             </div>
           </div>
         </Transition>
       </Teleport>
+
       <!-- Test Details Modal -->
       <Teleport to="body">
         <Transition
@@ -1567,7 +1671,7 @@
                       >
                       <div class="flex flex-wrap gap-2 mb-2">
                         <span
-                          v-for="tag in editingRow.tags"
+                          v-for="tag in editingRow.tags || []"
                           :key="tag"
                           class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 group"
                         >
@@ -1631,7 +1735,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, onBeforeUnmount, ref, watch } from "vue";
+import type { ComponentPublicInstance } from "vue";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
+import { supabase } from "../supabase";
+import type { User } from "@supabase/supabase-js";
 
 type TestStatus = "untested" | "pass" | "fail" | "blocked";
 type TestPriority = "high" | "medium" | "low";
@@ -1673,14 +1781,26 @@ const query = ref("");
 const moduleFilter = ref("");
 const statusFilter = ref<"" | TestStatus>("");
 const lastSavedAt = ref<number | null>(null);
-const showClearModal = ref(false);
 const showBulkDeleteModal = ref(false);
+const showLogoutModal = ref(false);
 const editingRow = ref<ChecklistRow | null>(null);
 const newTagInput = ref("");
 const animationReady = ref(false);
 const selectedIds = ref(new Set<string>());
 const fileInput = ref<HTMLInputElement | null>(null);
 const checklistTop = ref<HTMLElement | null>(null);
+
+// -- Supabase Auth State --
+const user = ref<User | null>(null);
+const authEmail = ref("");
+const authPassword = ref("");
+const isLoginLoading = ref(false);
+const authMode = ref<"login" | "signup">("login");
+const authMessage = ref<{
+  type: "success" | "error";
+  text: string;
+} | null>(null);
+const currentProjectId = ref<string | undefined>(undefined);
 
 const isAllSelected = computed(() => {
   return (
@@ -1864,20 +1984,6 @@ function duplicateRow(rowId: string) {
   );
 }
 
-function clearAll() {
-  if (!rows.value.length) return;
-  showClearModal.value = true;
-}
-
-function confirmClear() {
-  rows.value = [];
-  query.value = "";
-  moduleFilter.value = "";
-  statusFilter.value = "";
-  persist();
-  showClearModal.value = false;
-}
-
 function normalize(s: string): string {
   return s.trim().toLowerCase();
 }
@@ -1960,7 +2066,9 @@ function goToPage(page: number) {
 }
 
 watch(filteredRows, () => {
-  currentPage.value = 1;
+  if (currentPage.value > totalPages.value) {
+    currentPage.value = Math.max(1, totalPages.value);
+  }
 });
 
 const counts = computed(() => {
@@ -2238,68 +2346,225 @@ function exportCSV() {
 }
 
 function persist() {
-  try {
-    lastSavedAt.value = Date.now();
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        version: 1,
-        savedAt: lastSavedAt.value,
-        meta: projectMeta.value,
-        rows: rows.value,
-        moduleSuggestions: moduleSuggestions.value,
-      }),
-    );
-  } catch (e) {
-    console.error("Failed to save checklist:", e);
-  }
+  lastSavedAt.value = Date.now();
+  if (!user.value) return;
+
+  // Debounce could be added here, but for now we save directly on change
+  saveToSupabase();
 }
 
-function loadFromStorage() {
+async function saveToSupabase() {
+  if (!user.value) return;
+
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    const parsed = JSON.parse(raw) as {
-      version?: number;
-      savedAt?: number;
-      rows?: ChecklistRow[];
-      meta?: { environment: string; build: string };
-      moduleSuggestions?: string[];
+    const payload = {
+      version: 1,
+      savedAt: lastSavedAt.value,
+      meta: projectMeta.value,
+      rows: rows.value,
+      moduleSuggestions: moduleSuggestions.value,
     };
 
-    if (parsed.meta) {
-      projectMeta.value = parsed.meta;
+    const updateData: any = {
+      user_id: user.value.id,
+      name: projectMeta.value.environment || "QA Checklist Project",
+      content: payload,
+    };
+
+    // If we have an ID, update it. If not, Supabase can handle upsert if we select on something,
+    // but here we might just want to let the user have one main project for simplicity,
+    // or insert if currentProjectId is null.
+    if (currentProjectId.value) {
+      updateData.id = currentProjectId.value;
     }
 
-    if (Array.isArray(parsed.rows)) {
-      rows.value = parsed.rows.map((r: any) =>
-        createRow({
-          ...r,
-          testName: r.testName || r.testId || "",
-        }),
-      );
-    }
-    if (
-      Array.isArray(parsed.moduleSuggestions) &&
-      parsed.moduleSuggestions.length
-    ) {
-      moduleSuggestions.value = parsed.moduleSuggestions;
-    }
-    lastSavedAt.value =
-      typeof parsed.savedAt === "number" ? parsed.savedAt : null;
-    return true;
+    const { data, error } = await supabase
+      .from("qa_projects")
+      .upsert(updateData)
+      .select()
+      .single();
+
+    if (error) throw error;
+    if (data) currentProjectId.value = data.id;
   } catch (e) {
-    console.warn("Failed to load checklist:", e);
-    return false;
+    console.error("Failed to sync with Supabase:", e);
   }
 }
 
-onMounted(() => {
+async function loadFromSupabase() {
+  if (!user.value) return;
+
+  try {
+    // Get the most recently updated project for this user
+    const { data, error } = await supabase
+      .from("qa_projects")
+      .select("*")
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error && error.code !== "PGRST116") throw error;
+
+    if (data) {
+      currentProjectId.value = data.id;
+      if (data.name) projectMeta.value.environment = data.name; // optional sync
+      if (data.content) {
+        const parsed = data.content;
+        if (parsed.meta) projectMeta.value = parsed.meta;
+        if (Array.isArray(parsed.rows)) {
+          rows.value = parsed.rows.map((r: any) =>
+            createRow({
+              ...r,
+              testName: r.testName || r.testId || "",
+            }),
+          );
+        }
+        if (
+          Array.isArray(parsed.moduleSuggestions) &&
+          parsed.moduleSuggestions.length
+        ) {
+          moduleSuggestions.value = parsed.moduleSuggestions;
+        }
+        lastSavedAt.value =
+          typeof parsed.savedAt === "number" ? parsed.savedAt : null;
+      }
+    } else {
+      // Migration: Check for local data if new user/project
+      const localRaw = localStorage.getItem("qa-regression-checklist-v1");
+      if (localRaw) {
+        try {
+          const parsed = JSON.parse(localRaw);
+          if (parsed.rows)
+            rows.value = parsed.rows.map((r: any) => createRow(r));
+          if (parsed.meta) projectMeta.value = parsed.meta;
+          // Sync immediately
+          await saveToSupabase();
+          console.log("Migrated local data to Supabase");
+        } catch (e) {
+          console.error("Migration failed", e);
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Failed to load from Supabase:", e);
+  }
+}
+
+// Auth Handlers
+async function handleAuth() {
+  if (!authEmail.value || !authPassword.value) return;
+  isLoginLoading.value = true;
+  authMessage.value = null;
+
+  try {
+    if (authMode.value === "login") {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: authEmail.value,
+        password: authPassword.value,
+      });
+      if (error) throw error;
+      user.value = data.user;
+      authMessage.value = { type: "success", text: "Welcome back!" };
+    } else {
+      const { data, error } = await supabase.auth.signUp({
+        email: authEmail.value,
+        password: authPassword.value,
+      });
+      if (error) throw error;
+      if (data.user) {
+        user.value = data.user;
+        authMessage.value = {
+          type: "success",
+          text: "Account created successfully!",
+        };
+      } else {
+        authMessage.value = {
+          type: "success",
+          text: "Check your email for the confirmation link.",
+        };
+      }
+    }
+  } catch (e: any) {
+    authMessage.value = {
+      type: "error",
+      text: e.message || "Authentication failed",
+    };
+  } finally {
+    isLoginLoading.value = false;
+  }
+}
+
+const router = useRouter();
+
+async function confirmLogout() {
+  // Auto-save before signing out
+  await saveToSupabase();
+
+  await supabase.auth.signOut();
+  user.value = null;
+  rows.value = []; // Clear data for security
+  authEmail.value = "";
+  authPassword.value = "";
+  showLogoutModal.value = false;
+  router.push("/");
+}
+
+onMounted(async () => {
   document.title = "QA Test Flow";
-  const loaded = loadFromStorage();
-  if (!loaded) {
-    // Start with a single empty row for convenience
+
+  // Check initial session
+  const { data } = await supabase.auth.getSession();
+  if (data.session) {
+    user.value = data.session.user;
+    await loadFromSupabase();
+  } else {
+    // Optionally load from local storage if you want to support offline/unauthed
+    // But since the request is "access only by me", strictly show nothing until login.
+    // We will NOT load from local storage to enforce privacy.
+  }
+
+  // Auth Listener
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    user.value = session?.user || null;
+    if (event === "SIGNED_IN" && user.value) {
+      await loadFromSupabase();
+    } else if (event === "SIGNED_OUT") {
+      rows.value = [];
+      currentProjectId.value = undefined;
+    }
+  });
+
+  // If no user, maybe start with empty? The template handles the blur/block.
+  if (!rows.value.length && user.value) {
     addRow({ testName: "", module: "Login" });
+  }
+
+  // Prevent accidental back navigation / tab close
+  window.addEventListener("beforeunload", handleBeforeUnload);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("beforeunload", handleBeforeUnload);
+});
+
+function handleBeforeUnload(e: BeforeUnloadEvent) {
+  if (user.value) {
+    e.preventDefault();
+    e.returnValue = ""; // Legacy requirement for Chrome
+  }
+}
+
+// Intercept in-app navigation (e.g. Back Button in header)
+onBeforeRouteLeave((to, from, next) => {
+  if (user.value) {
+    showLogoutModal.value = true;
+    // We cannot easily 'pause' and resume with next() inside a click handler here simply.
+    // Instead, we prevent navigation.
+    // A better UX might be to save pending route and navigate after confirm,
+    // but for "Access Only By Me" security, showing the Logout Modal is safest.
+    next(false);
+  } else {
+    next();
   }
 });
 
