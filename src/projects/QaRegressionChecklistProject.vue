@@ -274,6 +274,7 @@
         >
           <!-- Checklist View Wrapper -->
           <div
+            ref="checklistTop"
             v-if="currentView === 'checklist'"
             key="checklist"
             class="flex flex-col"
@@ -427,7 +428,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="row in filteredRows"
+                    v-for="row in paginatedRows"
                     :key="row.rowId"
                     class="bg-white hover:bg-indigo-50/40 transition-shadow shadow-sm hover:shadow-md rounded-xl"
                   >
@@ -764,6 +765,68 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div
+              v-if="totalPages > 1"
+              class="px-6 py-4 border-t border-indigo-50 flex flex-col sm:flex-row items-center justify-between gap-4"
+            >
+              <div class="text-xs text-slate-500 font-medium">
+                Showing
+                <span class="font-bold text-indigo-600">{{
+                  (currentPage - 1) * itemsPerPage + 1
+                }}</span>
+                to
+                <span class="font-bold text-indigo-600">{{
+                  Math.min(currentPage * itemsPerPage, filteredRows.length)
+                }}</span>
+                of
+                <span class="font-bold text-indigo-600">{{
+                  filteredRows.length
+                }}</span>
+                tests
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  @click="goToPage(currentPage - 1)"
+                  :disabled="currentPage === 1"
+                  class="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed transition-all shadow-sm"
+                >
+                  Prev
+                </button>
+
+                <div class="flex gap-1">
+                  <!-- Simple page range logic for display -->
+                  <template v-for="page in visiblePages" :key="page">
+                    <span
+                      v-if="page === -1"
+                      class="w-8 h-8 flex items-center justify-center text-slate-400"
+                      >...</span
+                    >
+                    <button
+                      v-else
+                      @click="goToPage(page)"
+                      class="w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all shadow-sm"
+                      :class="
+                        currentPage === page
+                          ? 'bg-indigo-600 text-white shadow-indigo-200'
+                          : 'bg-white text-slate-600 border border-slate-200 hover:border-indigo-300 hover:text-indigo-600'
+                      "
+                    >
+                      {{ page }}
+                    </button>
+                  </template>
+                </div>
+
+                <button
+                  @click="goToPage(currentPage + 1)"
+                  :disabled="currentPage === totalPages"
+                  class="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed transition-all shadow-sm"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1617,6 +1680,7 @@ const newTagInput = ref("");
 const animationReady = ref(false);
 const selectedIds = ref(new Set<string>());
 const fileInput = ref<HTMLInputElement | null>(null);
+const checklistTop = ref<HTMLElement | null>(null);
 
 const isAllSelected = computed(() => {
   return (
@@ -1840,6 +1904,63 @@ const filteredRows = computed(() => {
     const hay = `${r.testName} ${r.module} ${r.status} ${r.bug}`.toLowerCase();
     return hay.includes(q);
   });
+});
+
+// -- Pagination Logic --
+const currentPage = ref(1);
+const itemsPerPage = 10;
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredRows.value.length / itemsPerPage);
+});
+
+const paginatedRows = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredRows.value.slice(start, end);
+});
+
+const visiblePages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const delta = 2; // Number of pages to show on each side of current
+  const range: number[] = [];
+  const rangeWithDots: number[] = [];
+
+  for (let i = 1; i <= total; i++) {
+    if (
+      i === 1 ||
+      i === total ||
+      (i >= current - delta && i <= current + delta)
+    ) {
+      range.push(i);
+    }
+  }
+
+  let l: number | null = null;
+  for (const i of range) {
+    if (l) {
+      if (i - l === 2) {
+        rangeWithDots.push(l + 1);
+      } else if (i - l !== 1) {
+        rangeWithDots.push(-1); // -1 indicates dots
+      }
+    }
+    rangeWithDots.push(i);
+    l = i;
+  }
+  return rangeWithDots;
+});
+
+function goToPage(page: number) {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+    checklistTop.value?.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+watch(filteredRows, () => {
+  currentPage.value = 1;
 });
 
 const counts = computed(() => {
