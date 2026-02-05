@@ -1736,7 +1736,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onBeforeUnmount, ref, watch } from "vue";
-import type { ComponentPublicInstance } from "vue";
+
 import { onBeforeRouteLeave, useRouter } from "vue-router";
 import { supabase } from "../supabase";
 import type { User } from "@supabase/supabase-js";
@@ -1769,8 +1769,6 @@ interface ChecklistRow {
   createdAt: number;
   updatedAt: number;
 }
-
-const STORAGE_KEY = "qa-regression-checklist-v1";
 
 const priorities: TestPriority[] = ["low", "medium", "high"];
 
@@ -2555,7 +2553,7 @@ function handleBeforeUnload(e: BeforeUnloadEvent) {
 }
 
 // Intercept in-app navigation (e.g. Back Button in header)
-onBeforeRouteLeave((to, from, next) => {
+onBeforeRouteLeave((_to, _from, next) => {
   if (user.value) {
     showLogoutModal.value = true;
     // We cannot easily 'pause' and resume with next() inside a click handler here simply.
