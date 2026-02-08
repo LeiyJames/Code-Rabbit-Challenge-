@@ -15,6 +15,19 @@ create table if not exists qa_projects (
   updated_at timestamptz default now()
 );
 
+-- Auto-update updated_at on every row change (critical for load ordering)
+create or replace function qa_projects_updated_at()
+returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+drop trigger if exists qa_projects_updated_at_trigger on qa_projects;
+create trigger qa_projects_updated_at_trigger
+  before update on qa_projects
+  for each row execute function qa_projects_updated_at();
+
 -- Enable Row Level Security (RLS)
 alter table qa_projects enable row level security;
 
@@ -55,3 +68,21 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here
 ```
 
 Once this is done, the Login screen will appear in your project.
+
+## 4. (Existing tables) Add updated_at trigger
+
+If you already created the table before, run this in the SQL Editor to fix data sync (ensures deletes persist):
+
+```sql
+create or replace function qa_projects_updated_at()
+returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+drop trigger if exists qa_projects_updated_at_trigger on qa_projects;
+create trigger qa_projects_updated_at_trigger
+  before update on qa_projects
+  for each row execute function qa_projects_updated_at();
+```

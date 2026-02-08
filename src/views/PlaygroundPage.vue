@@ -57,6 +57,7 @@
           <!-- Action Buttons -->
           <div class="flex gap-2">
             <button
+              v-if="!isQaProject"
               @click="toggleCodePreview"
               class="px-3 py-2 bg-neutral-200 text-neutral-700 rounded-lg font-medium hover:bg-neutral-300 transition-all text-sm"
               title="Toggle code preview"
@@ -64,6 +65,7 @@
               {{ showCode ? "Hide" : "Show" }} Code
             </button>
             <button
+              v-if="!isQaProject"
               @click="handleReset"
               class="px-3 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-all text-sm"
               title="Reset project"
@@ -118,12 +120,17 @@
     >
       <div v-if="project">
         <!-- Side-by-side Layout with Code -->
-        <div :class="['flex gap-6', showCode ? 'flex-col lg:flex-row' : '']">
+        <div
+          :class="[
+            'flex gap-6',
+            showCode && !isQaProject ? 'flex-col lg:flex-row' : '',
+          ]"
+        >
           <!-- Project Component -->
           <div
             :class="[
               'bg-white rounded-2xl shadow-lg p-8 min-h-[600px]',
-              showCode ? 'lg:w-1/2' : 'w-full',
+              showCode && !isQaProject ? 'lg:w-1/2' : 'w-full',
             ]"
           >
             <ErrorBoundary>
@@ -132,7 +139,10 @@
           </div>
 
           <!-- Code Preview Panel (Right Side) - Single Box with Tabs -->
-          <div v-if="showCode && project.codePreview" class="lg:w-1/2">
+          <div
+            v-if="!isQaProject && showCode && project.codePreview"
+            class="lg:w-1/2"
+          >
             <div class="bg-neutral-900 text-white rounded-xl overflow-hidden">
               <!-- Tabs Header -->
               <div class="bg-neutral-800 border-b border-neutral-700">
@@ -215,6 +225,7 @@
         <!-- What This Demonstrates Section -->
         <div
           v-if="
+            !isQaProject &&
             project.whatThisDemonstrates &&
             project.whatThisDemonstrates.length > 0
           "
@@ -343,6 +354,10 @@ const project = computed(() => {
   const slug = route.params.slug as string;
   return getProjectBySlug(slug);
 });
+
+const isQaProject = computed(
+  () => project.value?.slug === "qa-regression-checklist"
+);
 
 function goBack() {
   router.push("/");

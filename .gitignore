@@ -1,3 +1,14 @@
+# Environment (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# Debug scripts (may contain credentials)
+check_data.js
+diagnose.js
+diagnose.ts
+diagnose_query.js
+
 # Logs
 logs
 *.log

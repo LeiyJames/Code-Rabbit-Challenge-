@@ -77,8 +77,8 @@
                 isLoginLoading
                   ? "Processing..."
                   : authMode === "login"
-                    ? "Sign In"
-                    : "Create Account"
+                  ? "Sign In"
+                  : "Create Account"
               }}
             </button>
           </form>
@@ -107,36 +107,97 @@
             track real-time coverage, and visualize project health.
           </p>
 
-          <!-- Environment & Build Info -->
-          <div class="flex flex-wrap gap-4 mt-4">
+          <!-- Project Selector -->
+          <div
+            v-if="projectsList.length > 0"
+            class="flex flex-wrap gap-4 mt-4 items-center"
+          >
             <div
               class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all"
             >
               <span
                 class="text-xs font-bold text-slate-400 uppercase tracking-wider"
-                >Env:</span
+                >Project:</span
               >
-              <input
-                v-model="projectMeta.environment"
-                @change="persist"
-                placeholder="e.g. Staging"
-                class="bg-transparent border-none p-0 text-sm font-semibold text-slate-700 placeholder-slate-300 w-24 focus:ring-0"
-              />
+              <select
+                v-model="currentProjectId"
+                @change="onProjectSwitch"
+                class="bg-transparent border-none p-0 text-sm font-semibold text-slate-700 focus:ring-0 min-w-[140px]"
+              >
+                <option v-for="p in projectsList" :key="p.id" :value="p.id">
+                  {{ p.name || "Unnamed" }}
+                </option>
+              </select>
             </div>
-            <div
-              class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all"
+            <button
+              @click="
+                showNewProjectModal = true;
+                newProjectName = '';
+              "
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-colors"
+              title="Create new project"
             >
-              <span
-                class="text-xs font-bold text-slate-400 uppercase tracking-wider"
-                >Build:</span
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-              <input
-                v-model="projectMeta.build"
-                @change="persist"
-                placeholder="e.g. v1.0.0"
-                class="bg-transparent border-none p-0 text-sm font-semibold text-slate-700 placeholder-slate-300 w-24 focus:ring-0"
-              />
-            </div>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              New Project
+            </button>
+            <button
+              @click="
+                showRenameProjectModal = true;
+                renameProjectName =
+                  projectsList.find((p) => p.id === currentProjectId)?.name ||
+                  '';
+              "
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors"
+              title="Rename current project"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+              Rename
+            </button>
+            <button
+              v-if="projectsList.length > 1"
+              @click="showDeleteProjectModal = true"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg border border-rose-200 transition-colors"
+              title="Delete current project"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+              Delete Project
+            </button>
           </div>
         </div>
 
@@ -259,8 +320,12 @@
       <!-- Stats Overview -->
       <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
         <!-- Total -->
-        <div
-          class="p-4 bg-white border border-indigo-100 rounded-2xl shadow-sm flex flex-col items-center justify-center gap-1 group hover:border-indigo-200 transition-colors"
+        <button
+          type="button"
+          @click="filterByStatus('')"
+          class="p-4 bg-white border border-indigo-100 rounded-2xl shadow-sm flex flex-col items-center justify-center gap-1 group hover:border-indigo-200 transition-colors cursor-pointer text-left w-full min-h-[88px]"
+          :class="statusFilter === '' ? 'ring-2 ring-indigo-400' : ''"
+          title="Show all tests"
         >
           <div
             class="text-3xl font-bold text-slate-800 group-hover:text-indigo-600 transition-colors"
@@ -272,11 +337,15 @@
           >
             Total Tests
           </div>
-        </div>
+        </button>
 
         <!-- Pass -->
-        <div
-          class="p-4 bg-white border border-emerald-100 rounded-2xl shadow-sm flex flex-col items-center justify-center gap-1 group hover:border-emerald-200 transition-colors"
+        <button
+          type="button"
+          @click="filterByStatus('pass')"
+          class="p-4 bg-white border border-emerald-100 rounded-2xl shadow-sm flex flex-col items-center justify-center gap-1 group hover:border-emerald-200 transition-colors cursor-pointer text-left w-full min-h-[88px]"
+          :class="statusFilter === 'pass' ? 'ring-2 ring-emerald-400' : ''"
+          title="Show passed tests"
         >
           <div class="text-3xl font-bold text-emerald-600">
             {{ counts.pass }}
@@ -286,11 +355,15 @@
           >
             Passed
           </div>
-        </div>
+        </button>
 
         <!-- Fail -->
-        <div
-          class="p-4 bg-white border border-rose-100 rounded-2xl shadow-sm flex flex-col items-center justify-center gap-1 group hover:border-rose-200 transition-colors relative overflow-hidden"
+        <button
+          type="button"
+          @click="filterByStatus('fail')"
+          class="p-4 bg-white border border-rose-100 rounded-2xl shadow-sm flex flex-col items-center justify-center gap-1 group hover:border-rose-200 transition-colors cursor-pointer text-left w-full min-h-[88px] relative overflow-hidden"
+          :class="statusFilter === 'fail' ? 'ring-2 ring-rose-400' : ''"
+          title="Show failed tests"
         >
           <div class="text-3xl font-bold text-rose-600 relative z-10">
             {{ counts.fail }}
@@ -304,11 +377,15 @@
             v-if="counts.fail > 0"
             class="absolute -right-4 -top-4 w-16 h-16 bg-rose-50 rounded-full blur-xl opacity-50"
           ></div>
-        </div>
+        </button>
 
         <!-- Blocked -->
-        <div
-          class="p-4 bg-white border border-amber-100 rounded-2xl shadow-sm flex flex-col items-center justify-center gap-1 group hover:border-amber-200 transition-colors"
+        <button
+          type="button"
+          @click="filterByStatus('blocked')"
+          class="p-4 bg-white border border-amber-100 rounded-2xl shadow-sm flex flex-col items-center justify-center gap-1 group hover:border-amber-200 transition-colors cursor-pointer text-left w-full min-h-[88px]"
+          :class="statusFilter === 'blocked' ? 'ring-2 ring-amber-400' : ''"
+          title="Show blocked tests"
         >
           <div class="text-3xl font-bold text-amber-500">
             {{ counts.blocked }}
@@ -318,7 +395,7 @@
           >
             Blocked
           </div>
-        </div>
+        </button>
 
         <!-- Progress -->
         <div
@@ -340,6 +417,7 @@
             Coverage
           </div>
         </div>
+
       </div>
 
       <!-- Main Content Area -->
@@ -347,7 +425,20 @@
         class="bg-white/80 backdrop-blur-xl border border-white/50 rounded-3xl shadow-xl shadow-indigo-100/50 overflow-hidden flex flex-col"
       >
         <!-- View Tabs -->
-        <div class="flex border-b border-indigo-50">
+        <div class="flex border-b border-indigo-50 items-center">
+          <div class="flex">
+          <button
+            @click="currentView = 'analytics'"
+            class="px-6 py-4 text-sm font-bold uppercase tracking-wide transition-all border-b-2"
+            :class="
+              currentView === 'analytics'
+                ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50'
+                : 'border-transparent text-slate-500 hover:text-indigo-600 hover:bg-slate-50'
+            "
+            title="Dashboard"
+          >
+            Analytics Report
+          </button>
           <button
             @click="currentView = 'checklist'"
             class="px-6 py-4 text-sm font-bold uppercase tracking-wide transition-all border-b-2"
@@ -360,16 +451,13 @@
           >
             Test Suite
           </button>
+          </div>
           <button
-            @click="currentView = 'analytics'"
-            class="px-6 py-4 text-sm font-bold uppercase tracking-wide transition-all border-b-2"
-            :class="
-              currentView === 'analytics'
-                ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50'
-                : 'border-transparent text-slate-500 hover:text-indigo-600 hover:bg-slate-50'
-            "
+            @click="showReportModal = true"
+            class="ml-auto mr-4 px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold text-xs hover:bg-indigo-700 transition-all"
+            title="View full report"
           >
-            Analytics Report
+            View Report
           </button>
         </div>
 
@@ -944,7 +1032,7 @@
 
           <!-- Analytics Dashboard View -->
           <div v-else key="analytics" class="p-6 space-y-8 min-h-[400px]">
-            <!-- Project Health & Chart -->
+            <!-- Project Score & Chart -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <!-- Visual Chart -->
               <div
@@ -968,7 +1056,9 @@
                       fill="transparent"
                       stroke-width="12"
                       :stroke="seg.color"
-                      :stroke-dasharray="`${animationReady ? seg.length : 0} ${circumference}`"
+                      :stroke-dasharray="`${
+                        animationReady ? seg.length : 0
+                      } ${circumference}`"
                       :stroke-dashoffset="seg.offset"
                       class="transition-all duration-1000 ease-out"
                     />
@@ -1034,7 +1124,7 @@
                     <div
                       class="text-indigo-100 text-sm font-semibold uppercase tracking-wider mb-1"
                     >
-                      Project Health
+                      Project Score
                     </div>
                     <div class="text-3xl font-bold">
                       {{ healthScore }} / 100
@@ -1262,7 +1352,60 @@
           </div>
           <div>{{ rows.length }} rows total</div>
         </div>
+        <!-- Sync Error Banner -->
+        <div
+          v-if="syncError"
+          class="bg-rose-500 text-white px-4 py-2 text-center text-sm font-bold"
+        >
+          Sync Error: {{ syncError }}
+        </div>
       </div>
+
+      <!-- Toast (Import success/error) -->
+      <Teleport to="body">
+        <Transition
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="opacity-0 translate-y-2"
+          enter-to-class="opacity-100 translate-y-0"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="opacity-100 translate-y-0"
+          leave-to-class="opacity-0 translate-y-2"
+        >
+          <div
+            v-if="toast"
+            :class="toast.type === 'success' ? 'bg-emerald-600' : 'bg-rose-600'"
+            class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-xl text-white text-sm font-medium shadow-lg"
+          >
+            {{ toast.text }}
+          </div>
+        </Transition>
+      </Teleport>
+
+      <!-- Initial Load Spinner -->
+      <Teleport to="body">
+        <Transition
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+          leave-active-class="transition duration-200 ease-in"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
+        >
+          <div
+            v-if="isInitialLoad && user"
+            class="fixed inset-0 z-[150] flex items-center justify-center bg-slate-900/20 backdrop-blur-sm"
+          >
+            <div class="flex flex-col items-center gap-4">
+              <div
+                class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"
+              />
+              <p class="text-sm font-medium text-slate-600">
+                Loading your projects...
+              </p>
+            </div>
+          </div>
+        </Transition>
+      </Teleport>
 
       <datalist id="moduleSuggestions">
         <option v-for="m in moduleSuggestions" :key="m" :value="m" />
@@ -1339,6 +1482,232 @@
         </Transition>
       </Teleport>
 
+      <!-- New Project Modal -->
+      <Teleport to="body">
+        <Transition
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
+        >
+          <div
+            v-if="showNewProjectModal"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+            @click.self="
+              showNewProjectModal = false;
+              newProjectError = null;
+            "
+          >
+            <div
+              class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 transform transition-all scale-100"
+            >
+              <div class="flex items-center gap-4 mb-4">
+                <div class="p-3 bg-indigo-100 text-indigo-600 rounded-full">
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-slate-800">New Project</h3>
+                  <p class="text-sm text-slate-500">
+                    Create a separate checklist (e.g. Mobile Staging, Web
+                    Production)
+                  </p>
+                </div>
+              </div>
+              <input
+                v-model="newProjectName"
+                type="text"
+                placeholder="e.g. App - Staging"
+                class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm mb-4"
+                :disabled="isCreatingProject"
+                @keydown.enter="confirmCreateProject"
+              />
+              <p
+                v-if="newProjectError"
+                class="text-sm text-rose-600 bg-rose-50 px-3 py-2 rounded-lg mb-4"
+              >
+                {{ newProjectError }}
+              </p>
+              <div class="flex justify-end gap-3">
+                <button
+                  @click="
+                    showNewProjectModal = false;
+                    newProjectError = null;
+                  "
+                  :disabled="isCreatingProject"
+                  class="px-4 py-2 text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 font-medium transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  @click="confirmCreateProject"
+                  :disabled="!newProjectName.trim() || isCreatingProject"
+                  class="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {{ isCreatingProject ? "Creating..." : "Create" }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </Teleport>
+
+      <!-- Rename Project Modal -->
+      <Teleport to="body">
+        <Transition
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
+        >
+          <div
+            v-if="showRenameProjectModal"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+            @click.self="showRenameProjectModal = false"
+          >
+            <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="p-3 bg-indigo-100 text-indigo-600 rounded-full">
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-slate-800">
+                    Rename project
+                  </h3>
+                  <p class="text-sm text-slate-500">
+                    Enter a new name for this project
+                  </p>
+                </div>
+              </div>
+              <input
+                v-model="renameProjectName"
+                type="text"
+                placeholder="e.g. Mobile Staging"
+                class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm mb-6"
+                @keydown.enter="confirmRenameProject"
+              />
+              <div class="flex justify-end gap-3">
+                <button
+                  @click="showRenameProjectModal = false"
+                  class="px-4 py-2 text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  @click="confirmRenameProject"
+                  :disabled="!renameProjectName.trim()"
+                  class="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Rename
+                </button>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </Teleport>
+
+      <!-- Delete Project Modal -->
+      <Teleport to="body">
+        <Transition
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
+        >
+          <div
+            v-if="showDeleteProjectModal"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+            @click.self="
+              showDeleteProjectModal = false;
+              deleteProjectError = null;
+            "
+          >
+            <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="p-3 bg-rose-100 text-rose-600 rounded-full">
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-slate-800">
+                    Delete this project?
+                  </h3>
+                  <p class="text-sm text-slate-500">
+                    "{{
+                      projectsList.find((p) => p.id === currentProjectId)
+                        ?.name || "Unnamed"
+                    }}" and all its tests will be permanently removed.
+                  </p>
+                </div>
+              </div>
+              <p
+                v-if="deleteProjectError"
+                class="text-sm text-rose-600 bg-rose-50 px-3 py-2 rounded-lg mb-4"
+              >
+                {{ deleteProjectError }}
+              </p>
+              <div class="flex justify-end gap-3">
+                <button
+                  @click="
+                    showDeleteProjectModal = false;
+                    deleteProjectError = null;
+                  "
+                  class="px-4 py-2 text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  @click="confirmDeleteProject"
+                  class="px-4 py-2 text-white bg-rose-600 rounded-lg hover:bg-rose-700 font-bold"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </Teleport>
+
       <!-- Logout Confirmation Modal -->
       <Teleport to="body">
         <Transition
@@ -1394,6 +1763,149 @@
                 >
                   Yes, Sign Out
                 </button>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </Teleport>
+
+      <!-- Report Summary Modal -->
+      <Teleport to="body">
+        <Transition
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
+        >
+          <div
+            v-if="showReportModal"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+            @click.self="showReportModal = false"
+          >
+            <div
+              class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden flex flex-col"
+            >
+              <!-- Report Header -->
+              <div class="p-6 border-b border-slate-200 bg-slate-50/50 shrink-0">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 class="text-xl font-bold text-indigo-600">QA Regression Report</h2>
+                    <p class="text-sm text-slate-500 mt-1">
+                      {{ projectsList.find((p) => p.id === currentProjectId)?.name || "Checklist" }}
+                      · {{ new Date().toLocaleString() }}
+                    </p>
+                  </div>
+                  <button
+                    @click="showReportModal = false"
+                    class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                    title="Close"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Report Body -->
+              <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <!-- Summary -->
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Summary</h3>
+                  <div class="grid grid-cols-5 gap-4">
+                    <div>
+                      <div class="text-2xl font-bold text-slate-800">{{ rows.length }}</div>
+                      <div class="text-xs text-slate-500">Total</div>
+                    </div>
+                    <div>
+                      <div class="text-2xl font-bold text-emerald-600">{{ counts.pass }}</div>
+                      <div class="text-xs text-slate-500">Passed</div>
+                    </div>
+                    <div>
+                      <div class="text-2xl font-bold text-rose-600">{{ counts.fail }}</div>
+                      <div class="text-xs text-slate-500">Failed</div>
+                    </div>
+                    <div>
+                      <div class="text-2xl font-bold text-amber-600">{{ counts.blocked }}</div>
+                      <div class="text-xs text-slate-500">Blocked</div>
+                    </div>
+                    <div>
+                      <div class="text-2xl font-bold text-slate-400">{{ counts.untested }}</div>
+                      <div class="text-xs text-slate-500">Untested</div>
+                    </div>
+                  </div>
+                  <div class="mt-3 flex gap-6 text-sm">
+                    <span><strong>Coverage:</strong> {{ completionPercent }}%</span>
+                    <span><strong>Project Score:</strong> {{ healthScore }}/100</span>
+                  </div>
+                </div>
+
+                <!-- Status Distribution -->
+                <div>
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Status Distribution</h3>
+                  <table class="w-full border border-slate-200 text-sm rounded-lg overflow-hidden">
+                    <thead class="bg-slate-50">
+                      <tr>
+                        <th class="px-4 py-2 text-left font-semibold text-slate-600">Status</th>
+                        <th class="px-4 py-2 text-right font-semibold text-slate-600">Count</th>
+                        <th class="px-4 py-2 text-right font-semibold text-slate-600">%</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                      <tr class="border-t border-slate-100">
+                        <td class="px-4 py-2">Pass</td>
+                        <td class="px-4 py-2 text-right text-emerald-600 font-medium">{{ counts.pass }}</td>
+                        <td class="px-4 py-2 text-right">{{ rows.length ? Math.round((counts.pass / rows.length) * 100) : 0 }}%</td>
+                      </tr>
+                      <tr class="border-t border-slate-100">
+                        <td class="px-4 py-2">Fail</td>
+                        <td class="px-4 py-2 text-right text-rose-600 font-medium">{{ counts.fail }}</td>
+                        <td class="px-4 py-2 text-right">{{ rows.length ? Math.round((counts.fail / rows.length) * 100) : 0 }}%</td>
+                      </tr>
+                      <tr class="border-t border-slate-100">
+                        <td class="px-4 py-2">Blocked</td>
+                        <td class="px-4 py-2 text-right text-amber-600 font-medium">{{ counts.blocked }}</td>
+                        <td class="px-4 py-2 text-right">{{ rows.length ? Math.round((counts.blocked / rows.length) * 100) : 0 }}%</td>
+                      </tr>
+                      <tr class="border-t border-slate-100">
+                        <td class="px-4 py-2">Untested</td>
+                        <td class="px-4 py-2 text-right text-slate-500">{{ counts.untested }}</td>
+                        <td class="px-4 py-2 text-right">{{ rows.length ? Math.round((counts.untested / rows.length) * 100) : 0 }}%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Module Performance -->
+                <div>
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Module Performance</h3>
+                  <div class="overflow-x-auto rounded-lg border border-slate-200">
+                    <table class="w-full text-sm">
+                      <thead class="bg-slate-50">
+                        <tr>
+                          <th class="px-4 py-2 text-left font-semibold text-slate-600">Module</th>
+                          <th class="px-4 py-2 text-center font-semibold text-slate-600">Coverage</th>
+                          <th class="px-4 py-2 text-right font-semibold text-slate-600">Pass</th>
+                          <th class="px-4 py-2 text-right font-semibold text-slate-600">Fail</th>
+                          <th class="px-4 py-2 text-right font-semibold text-slate-600">Blocked</th>
+                          <th class="px-4 py-2 text-right font-semibold text-slate-600">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-slate-100">
+                        <tr v-for="mod in moduleStats" :key="mod.name">
+                          <td class="px-4 py-2 font-medium text-slate-800">{{ mod.name }}</td>
+                          <td class="px-4 py-2 text-center">{{ mod.coverage }}%</td>
+                          <td class="px-4 py-2 text-right text-emerald-600">{{ mod.pass }}</td>
+                          <td class="px-4 py-2 text-right text-rose-600">{{ mod.fail }}</td>
+                          <td class="px-4 py-2 text-right text-amber-600">{{ mod.blocked }}</td>
+                          <td class="px-4 py-2 text-right font-bold text-slate-800">{{ mod.total }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1586,7 +2098,7 @@
                           @change="
                             logHistory(
                               editingRow,
-                              'Status changed to ' + editingRow.status,
+                              'Status changed to ' + editingRow.status
                             )
                           "
                           class="w-full rounded-xl border-slate-200 font-bold uppercase tracking-wide focus:ring-2 focus:ring-indigo-500 text-sm"
@@ -1614,7 +2126,7 @@
                               editingRow.priority = p;
                               logHistory(
                                 editingRow,
-                                'Priority changed to ' + p,
+                                'Priority changed to ' + p
                               );
                             "
                             class="flex-1 py-1.5 text-xs font-bold uppercase rounded-md transition-all"
@@ -1623,8 +2135,8 @@
                                 ? p === 'high'
                                   ? 'bg-rose-100 text-rose-700'
                                   : p === 'medium'
-                                    ? 'bg-amber-100 text-amber-700'
-                                    : 'bg-slate-100 text-slate-700'
+                                  ? 'bg-amber-100 text-amber-700'
+                                  : 'bg-slate-100 text-slate-700'
                                 : 'text-slate-400 hover:text-slate-600'
                             "
                           >
@@ -1735,7 +2247,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onBeforeUnmount, ref, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+  ref,
+  watch,
+} from "vue";
 
 import { onBeforeRouteLeave, useRouter } from "vue-router";
 import { supabase } from "../supabase";
@@ -1774,7 +2293,7 @@ const priorities: TestPriority[] = ["low", "medium", "high"];
 
 const rows = ref<ChecklistRow[]>([]);
 const projectMeta = ref({ environment: "", build: "" });
-const currentView = ref<"checklist" | "analytics">("checklist");
+const currentView = ref<"checklist" | "analytics">("analytics");
 const query = ref("");
 const moduleFilter = ref("");
 const statusFilter = ref<"" | TestStatus>("");
@@ -1787,6 +2306,7 @@ const animationReady = ref(false);
 const selectedIds = ref(new Set<string>());
 const fileInput = ref<HTMLInputElement | null>(null);
 const checklistTop = ref<HTMLElement | null>(null);
+const showReportModal = ref(false);
 
 // -- Supabase Auth State --
 const user = ref<User | null>(null);
@@ -1798,7 +2318,30 @@ const authMessage = ref<{
   type: "success" | "error";
   text: string;
 } | null>(null);
+const syncError = ref<string | null>(null);
 const currentProjectId = ref<string | undefined>(undefined);
+const projectsList = ref<{ id: string; name: string }[]>([]);
+const showNewProjectModal = ref(false);
+const newProjectError = ref<string | null>(null);
+const isCreatingProject = ref(false);
+const showDeleteProjectModal = ref(false);
+const showRenameProjectModal = ref(false);
+const renameProjectName = ref("");
+const deleteProjectError = ref<string | null>(null);
+const newProjectName = ref("");
+const previousProjectId = ref<string | undefined>(undefined);
+const toast = ref<{ type: "success" | "error"; text: string } | null>(null);
+const isInitialLoad = ref(true);
+
+let toastTimeout: ReturnType<typeof setTimeout> | null = null;
+function showToast(type: "success" | "error", text: string) {
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toast.value = { type, text };
+  toastTimeout = setTimeout(() => {
+    toast.value = null;
+    toastTimeout = null;
+  }, 3000);
+}
 
 const isAllSelected = computed(() => {
   return (
@@ -1836,11 +2379,12 @@ function bulkDelete() {
   showBulkDeleteModal.value = true;
 }
 
-function confirmBulkDelete() {
+async function confirmBulkDelete() {
   rows.value = rows.value.filter((r) => !selectedIds.value.has(r.rowId));
   selectedIds.value.clear();
-  persist();
   showBulkDeleteModal.value = false;
+  lastSavedAt.value = Date.now();
+  await saveToSupabase(); // Await so delete is persisted before any navigation
 }
 
 // Import / Export
@@ -1864,10 +2408,10 @@ function handleImport(e: Event) {
         rows.value = json.rows.map((r: any) => createRow(r));
         if (json.meta) projectMeta.value = json.meta;
       }
-      alert("Import successful!");
+      showToast("success", "Import successful!");
       persist();
     } catch (err) {
-      alert("Failed to import JSON: " + err);
+      showToast("error", "Failed to import JSON: " + (err as Error)?.message);
     }
     // value clear
     if (fileInput.value) fileInput.value.value = "";
@@ -1888,21 +2432,27 @@ function exportJSON() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `qa_checklist_backup_${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `qa_checklist_backup_${new Date()
+    .toISOString()
+    .slice(0, 10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
 }
 
-watch(currentView, (val) => {
-  if (val === "analytics") {
-    animationReady.value = false;
-    setTimeout(() => {
-      animationReady.value = true;
-    }, 400);
-  } else {
-    animationReady.value = false;
-  }
-});
+watch(
+  currentView,
+  (val) => {
+    if (val === "analytics") {
+      animationReady.value = false;
+      setTimeout(() => {
+        animationReady.value = true;
+      }, 400);
+    } else {
+      animationReady.value = false;
+    }
+  },
+  { immediate: true }
+);
 
 const moduleSuggestions = ref<string[]>([
   "Login",
@@ -1950,7 +2500,9 @@ function cryptoSafeId(): string {
   // Prefer cryptographically strong random when available
   const c = window.crypto?.getRandomValues?.(new Uint32Array(2));
   if (c) return `row_${c[0].toString(16)}_${c[1].toString(16)}`;
-  return `row_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
+  return `row_${Math.random().toString(16).slice(2)}_${Date.now().toString(
+    16
+  )}`;
 }
 
 function addRow(seed?: Partial<ChecklistRow>) {
@@ -1978,7 +2530,7 @@ function duplicateRow(rowId: string) {
       expectedResult: source.expectedResult,
       status: "untested",
       bug: "",
-    }),
+    })
   );
 }
 
@@ -1991,7 +2543,7 @@ const uniqueModules = computed(() => {
     rows.value
       .map((r) => r.module.trim())
       .filter(Boolean)
-      .sort((a, b) => a.localeCompare(b)),
+      .sort((a, b) => a.localeCompare(b))
   );
   return [...set];
 });
@@ -2061,6 +2613,13 @@ function goToPage(page: number) {
     currentPage.value = page;
     checklistTop.value?.scrollIntoView({ behavior: "smooth" });
   }
+}
+
+function filterByStatus(status: "" | TestStatus) {
+  statusFilter.value = status;
+  currentView.value = "checklist";
+  currentPage.value = 1;
+  nextTick(() => checklistTop.value?.scrollIntoView({ behavior: "smooth" }));
 }
 
 watch(filteredRows, () => {
@@ -2175,7 +2734,7 @@ const healthScore = computed(() => {
   const totalWeight = rows.value.reduce(
     (acc, r) =>
       acc + (r.priority === "high" ? 2 : r.priority === "low" ? 0.5 : 1),
-    0,
+    0
   );
 
   if (totalWeight === 0) return 100;
@@ -2198,7 +2757,7 @@ const healthScore = computed(() => {
 
 const bugStats = computed(() => {
   return rows.value.filter(
-    (r) => r.status === "fail" || r.status === "blocked",
+    (r) => r.status === "fail" || r.status === "blocked"
   );
 });
 
@@ -2322,7 +2881,7 @@ function exportCSV() {
         new Date(r.updatedAt).toISOString(),
       ]
         .map(csvEscape)
-        .join(","),
+        .join(",")
     ),
   ];
 
@@ -2343,12 +2902,19 @@ function exportCSV() {
   setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
 
+let persistTimeout: ReturnType<typeof setTimeout> | null = null;
+const PERSIST_DEBOUNCE_MS = 800;
+
 function persist() {
   lastSavedAt.value = Date.now();
   if (!user.value) return;
+  if (!currentProjectId.value) return;
 
-  // Debounce could be added here, but for now we save directly on change
-  saveToSupabase();
+  if (persistTimeout) clearTimeout(persistTimeout);
+  persistTimeout = setTimeout(() => {
+    persistTimeout = null;
+    saveToSupabase();
+  }, PERSIST_DEBOUNCE_MS);
 }
 
 async function saveToSupabase() {
@@ -2365,27 +2931,216 @@ async function saveToSupabase() {
 
     const updateData: any = {
       user_id: user.value.id,
-      name: projectMeta.value.environment || "QA Checklist Project",
       content: payload,
+      updated_at: new Date().toISOString(), // Critical: must set so ORDER BY updated_at returns correct project
     };
 
-    // If we have an ID, update it. If not, Supabase can handle upsert if we select on something,
-    // but here we might just want to let the user have one main project for simplicity,
-    // or insert if currentProjectId is null.
+    // If we have an ID, update it. If not, Supabase inserts a new row.
     if (currentProjectId.value) {
       updateData.id = currentProjectId.value;
     }
 
-    const { data, error } = await supabase
-      .from("qa_projects")
-      .upsert(updateData)
-      .select()
-      .single();
-
+    let data: any = null;
+    let error: any = null;
+    if (currentProjectId.value) {
+      const res = await supabase
+        .from("qa_projects")
+        .update({
+          content: updateData.content,
+          updated_at: updateData.updated_at,
+        })
+        .eq("id", currentProjectId.value)
+        .eq("user_id", user.value.id)
+        .select()
+        .single();
+      data = res.data;
+      error = res.error;
+    } else {
+      const res = await supabase
+        .from("qa_projects")
+        .insert({
+          ...updateData,
+          name: projectMeta.value.environment || "QA Checklist Project",
+        })
+        .select()
+        .single();
+      data = res.data;
+      error = res.error;
+    }
     if (error) throw error;
     if (data) currentProjectId.value = data.id;
-  } catch (e) {
+  } catch (e: any) {
     console.error("Failed to sync with Supabase:", e);
+    syncError.value = e.message || "Sync failed";
+    // Auto-hide after 5s
+    setTimeout(() => (syncError.value = null), 5000);
+  }
+}
+
+async function fetchProjectsList() {
+  if (!user.value) return;
+  const { data, error } = await supabase
+    .from("qa_projects")
+    .select("id, name")
+    .eq("user_id", user.value.id)
+    .order("updated_at", { ascending: false });
+  if (error) throw error;
+  projectsList.value = (data || []).map((p: any) => ({
+    id: p.id,
+    name: p.name || "Unnamed",
+  }));
+}
+
+function applyProjectData(data: any) {
+  if (!data) return;
+  currentProjectId.value = data.id;
+  previousProjectId.value = data.id;
+  if (data.content) {
+    const parsed = data.content;
+    if (parsed.meta) projectMeta.value = parsed.meta;
+    rows.value = Array.isArray(parsed.rows)
+      ? parsed.rows.map((r: any) =>
+          createRow({ ...r, testName: r.testName || r.testId || "" })
+        )
+      : [];
+    if (
+      Array.isArray(parsed.moduleSuggestions) &&
+      parsed.moduleSuggestions.length
+    ) {
+      moduleSuggestions.value = parsed.moduleSuggestions;
+    }
+    lastSavedAt.value =
+      typeof parsed.savedAt === "number" ? parsed.savedAt : null;
+  }
+}
+
+async function loadProject(projectId: string) {
+  if (!user.value) return;
+  const { data, error } = await supabase
+    .from("qa_projects")
+    .select("*")
+    .eq("id", projectId)
+    .eq("user_id", user.value.id)
+    .maybeSingle();
+  if (error) throw error;
+  applyProjectData(data);
+}
+
+async function onProjectSwitch() {
+  const newId = currentProjectId.value;
+  const oldId = previousProjectId.value;
+  if (newId === oldId || !newId || !oldId) return;
+  currentProjectId.value = oldId;
+  await saveToSupabase();
+  currentProjectId.value = newId;
+  previousProjectId.value = newId;
+  await loadProject(newId);
+}
+
+async function confirmRenameProject() {
+  const id = currentProjectId.value;
+  const name = renameProjectName.value.trim();
+  if (!id || !name || !user.value) return;
+  showRenameProjectModal.value = false;
+  try {
+    const { error } = await supabase
+      .from("qa_projects")
+      .update({ name })
+      .eq("id", id)
+      .eq("user_id", user.value.id);
+    if (error) throw error;
+    projectsList.value = projectsList.value.map((p) =>
+      p.id === id ? { ...p, name } : p
+    );
+  } catch (e: any) {
+    console.error("Failed to rename project:", e);
+    syncError.value = e.message || "Failed to rename project";
+    setTimeout(() => (syncError.value = null), 5000);
+  }
+}
+
+async function confirmDeleteProject() {
+  const id = currentProjectId.value;
+  if (!id || !user.value) return;
+  deleteProjectError.value = null;
+  try {
+    const { data, error } = await supabase
+      .from("qa_projects")
+      .delete()
+      .eq("id", id)
+      .select("id");
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      throw new Error(
+        "Project not found or delete was blocked. Ensure you have the delete RLS policy."
+      );
+    }
+    showDeleteProjectModal.value = false;
+    projectsList.value = projectsList.value.filter((p) => p.id !== id);
+    const next = projectsList.value[0];
+    if (next) {
+      await loadProject(next.id);
+    } else {
+      currentProjectId.value = undefined;
+      previousProjectId.value = undefined;
+      rows.value = [];
+      newProjectName.value = "Default Project";
+      await confirmCreateProject();
+    }
+  } catch (e: any) {
+    console.error("Failed to delete project:", e);
+    deleteProjectError.value = e.message || "Failed to delete project";
+    syncError.value = e.message || "Failed to delete project";
+    setTimeout(() => {
+      syncError.value = null;
+      deleteProjectError.value = null;
+    }, 5000);
+  }
+}
+
+async function confirmCreateProject() {
+  const name = newProjectName.value.trim();
+  if (!name || !user.value) return;
+  newProjectError.value = null;
+  isCreatingProject.value = true;
+  try {
+    const payload = {
+      version: 1,
+      savedAt: Date.now(),
+      meta: projectMeta.value,
+      rows: [],
+      moduleSuggestions: moduleSuggestions.value,
+    };
+    const { data, error } = await supabase
+      .from("qa_projects")
+      .insert({
+        user_id: user.value.id,
+        name,
+        content: payload,
+        updated_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+    if (error) throw error;
+    projectsList.value = [...projectsList.value, { id: data.id, name }];
+    currentProjectId.value = data.id;
+    previousProjectId.value = data.id;
+    rows.value = [];
+    projectMeta.value = { environment: "", build: "" };
+    addRow({ testName: "", module: "Login" });
+    await saveToSupabase();
+    showNewProjectModal.value = false;
+    newProjectName.value = "";
+  } catch (e: any) {
+    console.error("Failed to create project:", e);
+    newProjectError.value = e.message || "Failed to create project";
+    syncError.value = e.message || "Failed to create project";
+    setTimeout(() => {
+      syncError.value = null;
+      newProjectError.value = null;
+    }, 5000);
+  } finally {
+    isCreatingProject.value = false;
   }
 }
 
@@ -2393,41 +3148,20 @@ async function loadFromSupabase() {
   if (!user.value) return;
 
   try {
-    // Get the most recently updated project for this user
-    const { data, error } = await supabase
+    const { data: projects, error } = await supabase
       .from("qa_projects")
       .select("*")
-      .order("updated_at", { ascending: false })
-      .limit(1)
-      .single();
+      .eq("user_id", user.value.id)
+      .order("updated_at", { ascending: false });
 
-    if (error && error.code !== "PGRST116") throw error;
+    if (error) throw error;
 
-    if (data) {
-      currentProjectId.value = data.id;
-      if (data.name) projectMeta.value.environment = data.name; // optional sync
-      if (data.content) {
-        const parsed = data.content;
-        if (parsed.meta) projectMeta.value = parsed.meta;
-        if (Array.isArray(parsed.rows)) {
-          rows.value = parsed.rows.map((r: any) =>
-            createRow({
-              ...r,
-              testName: r.testName || r.testId || "",
-            }),
-          );
-        }
-        if (
-          Array.isArray(parsed.moduleSuggestions) &&
-          parsed.moduleSuggestions.length
-        ) {
-          moduleSuggestions.value = parsed.moduleSuggestions;
-        }
-        lastSavedAt.value =
-          typeof parsed.savedAt === "number" ? parsed.savedAt : null;
-      }
-    } else {
-      // Migration: Check for local data if new user/project
+    projectsList.value = (projects || []).map((p: any) => ({
+      id: p.id,
+      name: p.name || "Unnamed",
+    }));
+
+    if (!projects || projects.length === 0) {
       const localRaw = localStorage.getItem("qa-regression-checklist-v1");
       if (localRaw) {
         try {
@@ -2435,16 +3169,33 @@ async function loadFromSupabase() {
           if (parsed.rows)
             rows.value = parsed.rows.map((r: any) => createRow(r));
           if (parsed.meta) projectMeta.value = parsed.meta;
-          // Sync immediately
           await saveToSupabase();
-          console.log("Migrated local data to Supabase");
+          localStorage.removeItem("qa-regression-checklist-v1");
+          await fetchProjectsList();
         } catch (e) {
           console.error("Migration failed", e);
         }
       }
+      if (projectsList.value.length === 0) {
+        newProjectName.value = "Default Project";
+        await confirmCreateProject();
+      } else {
+        await loadProject(projectsList.value[0].id);
+      }
+    } else {
+      const best = projects.reduce((a, p) => {
+        const aRows = (a?.content as any)?.rows?.length ?? 0;
+        const pRows = (p.content as any)?.rows?.length ?? 0;
+        return pRows > aRows ? p : a;
+      });
+      currentProjectId.value = best.id;
+      applyProjectData(best);
     }
-  } catch (e) {
+    localStorage.removeItem("qa-regression-checklist-v1");
+  } catch (e: any) {
     console.error("Failed to load from Supabase:", e);
+  } finally {
+    isInitialLoad.value = false;
   }
 }
 
@@ -2514,19 +3265,21 @@ onMounted(async () => {
   const { data } = await supabase.auth.getSession();
   if (data.session) {
     user.value = data.session.user;
+    isInitialLoad.value = true;
     await loadFromSupabase();
   } else {
-    // Optionally load from local storage if you want to support offline/unauthed
-    // But since the request is "access only by me", strictly show nothing until login.
-    // We will NOT load from local storage to enforce privacy.
+    isInitialLoad.value = false;
   }
 
-  // Auth Listener
+  // Auth Listener (only load on actual sign-in, not on tab focus / TOKEN_REFRESHED)
   supabase.auth.onAuthStateChange(async (event, session) => {
+    const hadUser = !!user.value;
     user.value = session?.user || null;
-    if (event === "SIGNED_IN" && user.value) {
+    if (event === "SIGNED_IN" && user.value && !hadUser) {
+      isInitialLoad.value = true;
       await loadFromSupabase();
     } else if (event === "SIGNED_OUT") {
+      isInitialLoad.value = false;
       rows.value = [];
       currentProjectId.value = undefined;
     }
@@ -2546,34 +3299,28 @@ onBeforeUnmount(() => {
 });
 
 function handleBeforeUnload(e: BeforeUnloadEvent) {
-  if (user.value) {
+  if (user.value && persistTimeout) {
     e.preventDefault();
-    e.returnValue = ""; // Legacy requirement for Chrome
+    e.returnValue = ""; // Only block when there's a pending save
   }
 }
 
-// Intercept in-app navigation (e.g. Back Button in header)
-onBeforeRouteLeave((_to, _from, next) => {
-  if (user.value) {
-    showLogoutModal.value = true;
-    // We cannot easily 'pause' and resume with next() inside a click handler here simply.
-    // Instead, we prevent navigation.
-    // A better UX might be to save pending route and navigate after confirm,
-    // but for "Access Only By Me" security, showing the Logout Modal is safest.
-    next(false);
-  } else {
-    next();
+// Intercept in-app navigation: flush pending save then allow
+onBeforeRouteLeave(async (_to, _from, next) => {
+  if (persistTimeout && user.value) {
+    clearTimeout(persistTimeout);
+    persistTimeout = null;
+    await saveToSupabase();
   }
+  next();
 });
 
 // Auto-update timestamps and persist on edit
 watch(
   rows,
-  (next) => {
-    const now = Date.now();
-    for (const r of next) r.updatedAt = now;
+  () => {
     persist();
   },
-  { deep: true },
+  { deep: true }
 );
 </script>
