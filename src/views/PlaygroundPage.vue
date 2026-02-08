@@ -114,8 +114,9 @@
     <!-- Project Content -->
     <main
       :class="[
-        'mx-auto px-6 py-8',
-        isFullscreen ? 'h-[calc(100vh-80px)] overflow-auto' : 'max-w-7xl',
+        'mx-auto',
+        isFullscreen ? 'h-[calc(100vh-80px)] overflow-auto' : '',
+        isQaProject ? 'w-full max-w-none px-0 py-0' : 'px-6 py-8 max-w-7xl',
       ]"
     >
       <div v-if="project">
@@ -129,7 +130,10 @@
           <!-- Project Component -->
           <div
             :class="[
-              'bg-white rounded-2xl shadow-lg p-8 min-h-[600px]',
+              'min-h-[600px]',
+              isQaProject
+                ? 'w-full'
+                : 'bg-white rounded-2xl shadow-lg p-8 w-full',
               showCode && !isQaProject ? 'lg:w-1/2' : 'w-full',
             ]"
           >

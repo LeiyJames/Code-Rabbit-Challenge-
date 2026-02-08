@@ -87,7 +87,7 @@
     </div>
 
     <div
-      class="max-w-7xl mx-auto space-y-8 p-4 md:p-8 transition-all duration-500"
+      class="w-full min-h-screen space-y-8 p-4 md:p-8 transition-all duration-500"
       :class="{ 'blur-md opacity-20 pointer-events-none': !user }"
     >
       <!-- Header Section -->
