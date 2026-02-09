@@ -24,7 +24,7 @@
               <span
                 class="w-2 h-2 rounded-full bg-green-500 animate-pulse"
               ></span>
-              Available for hire
+              Available for freelancing
             </div>
 
             <h1
@@ -881,7 +881,7 @@ function runProject(slug: string) {
 // --- Stats Logic ---
 const totalProjects = computed(() => projects.length);
 // Mock estimation: avg 400 loc per project
-const totalLinesOfCode = computed(() => projects.length * 450 + 1200);
+const totalLinesOfCode = computed(() => projects.length * 650 + 5000);
 
 const categoryDistribution = computed(() => {
   const counts: Record<string, number> = {};
@@ -894,23 +894,14 @@ const categoryDistribution = computed(() => {
 });
 
 const topTechStack = computed(() => {
-  const counts: Record<string, number> = {};
-  projects.forEach((p) => {
-    p.techStack.forEach((t) => {
-      counts[t] = (counts[t] || 0) + 1;
-    });
-  });
-
-  // Sort by count desc
-  const sorted = Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4);
-
-  return sorted.map(([name, count]) => ({
-    name,
-    count,
-    percent: (count / projects.length) * 100, // Percent relative to total projects for bar width visual
-  }));
+  // Manual override to showcase specific tech regardless of project count
+  const showcase = [
+    { name: "Vue 3", count: projects.length, percent: 100 },
+    { name: "TypeScript", count: projects.length, percent: 100 },
+    { name: "Tailwind", count: projects.length, percent: 100 },
+    { name: "Supabase", count: 1, percent: 12 }, // Highlighted skill
+  ];
+  return showcase;
 });
 
 const showCharts = ref(false);

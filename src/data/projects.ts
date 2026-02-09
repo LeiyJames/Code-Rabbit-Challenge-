@@ -1232,9 +1232,9 @@ Expected: \${tc.expectedResult}\`
     techStack: [
       "Vue 3",
       "TypeScript",
-      "LocalStorage",
       "Priority Logic",
       "Analytics",
+      "Supabase",
     ],
     component: QaRegressionChecklistProject,
     category: "tool",

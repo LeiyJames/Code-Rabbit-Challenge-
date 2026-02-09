@@ -1,8 +1,8 @@
 <template>
   <article
-    class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-neutral-100"
+    class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-neutral-100 flex flex-col h-full"
   >
-    <div class="p-6 space-y-4">
+    <div class="p-6 flex flex-col gap-4 h-full">
       <!-- Header -->
       <div class="space-y-2">
         <div class="flex items-start justify-between gap-2">
@@ -51,7 +51,7 @@
       <!-- Run Button -->
       <button
         @click="$emit('run', project.slug)"
-        class="w-full h-12 bg-primary-500 text-white rounded-xl font-semibold transition-all hover:bg-primary-600 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
+        class="w-full h-12 bg-primary-500 text-white rounded-xl font-semibold transition-all hover:bg-primary-600 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 mt-auto"
       >
         <span>Run Project</span>
         <svg
