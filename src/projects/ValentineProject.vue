@@ -244,7 +244,7 @@ function handleMouseMove(e: MouseEvent | TouchEvent) {
       class="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
     >
       <div
-        class="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl transform scale-100 animate-bounce-in relative"
+        class="bg-white rounded-2xl p-6 md:p-8 w-[90%] max-w-sm text-center shadow-2xl transform scale-100 animate-bounce-in relative"
       >
         <button
           @click="handleModalClose"
@@ -280,14 +280,14 @@ function handleMouseMove(e: MouseEvent | TouchEvent) {
       />
 
       <h1
-        class="text-4xl md:text-6xl font-bold text-pink-600 drop-shadow-sm text-center px-4 leading-tight whitespace-nowrap"
+        class="text-3xl sm:text-4xl md:text-6xl font-bold text-pink-600 drop-shadow-sm text-center px-4 leading-tight md:whitespace-nowrap"
       >
         {{ mainMessage }}
       </h1>
       <div
-        class="text-pink-500 mt-4 font-medium max-w-lg text-center leading-relaxed"
+        class="text-pink-500 mt-4 font-medium w-full max-w-lg text-center leading-relaxed px-2"
       >
-        <p class="text-xl md:text-2xl min-h-[60px]">
+        <p class="text-lg md:text-2xl min-h-[60px] whitespace-pre-wrap">
           "{{ displayedLoveText }}"
         </p>
         <p
