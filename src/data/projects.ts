@@ -17,8 +17,25 @@ import QuizEngineProject from "@/projects/QuizEngineProject.vue";
 import SecureVotingProject from "@/projects/SecureVotingProject.vue";
 import SocialMessagingProject from "@/projects/SocialMessagingProject.vue";
 import WordScrambleProject from "@/projects/WordScrambleProject.vue";
+import ValentineProject from "@/projects/ValentineProject.vue";
 
 export const projects: Project[] = [
+  {
+    slug: "valentine-proposal",
+    name: "Will You Be My Valentine?",
+    description:
+      "A cute interactive proposal with playful animations and confetti surprises",
+    techStack: ["Vue 3", "Canvas Confetti", "Tailwind", "CSS Animations"],
+    component: ValentineProject,
+    category: "game",
+    difficulty: "Beginner",
+    concepts: [
+      "Event Handling",
+      "CSS Animations",
+      "Dynamic Styling",
+      "Third-party Libraries",
+    ],
+  },
   {
     slug: "word-scramble",
     name: "Word Scramble Game",
