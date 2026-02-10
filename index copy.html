@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typography Portrait</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        p {
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+            line-height: 8px;
+            text-align: justify;
+            word-break: break-all;
+            background: url(lols.jpg) no-repeat center;
+            background-attachment: fixed;
+            -webkit-background-size: 80%;
+            background-size: 80%;
+            background-position: center;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: rgba(225, 225, 255, 0);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        p:hover {
+            animation: textPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { 
+                filter: brightness(1) contrast(1);
+            }
+            50% { 
+                filter: brightness(1.2) contrast(1.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <p id="textMask"></p>
+
+    <script>
+        // Long love letter text
+        const loveLetter = "My dearest love from the moment I first saw you my heart knew it had found its home In your eyes I see galaxies of wonder in your smile I find the warmth of a thousand suns You are the poetry my soul has been trying to write the melody my heart has been longing to sing Every moment with you feels like a beautiful dream that I never want to wake from Your laughter is the music that makes my world dance your touch is the gentle breeze that calms every storm within me I love the way you see the world with such kindness and grace the way you make even the ordinary moments feel extraordinary When I am with you time stands still yet flies by all at once You are my yesterday my today and all of my tomorrows I promise to love you in the sunshine and in the rain through all the seasons that life brings our way I will hold your hand through every adventure cherish every quiet moment and stand by your side through every challenge You make me want to be a better person to see the beauty in everything to love more deeply and live more fully My love for you grows stronger with each passing day deeper with every shared experience I am grateful for every second we spend together for every laugh every tear every whispered secret in the dark You are my best friend my confidant my greatest adventure You are the answer to prayers I didn't even know I was praying the dream I never dared to dream I choose you today tomorrow and forever In this life and whatever comes after you are my always and forever my one true love I love you more than words could ever express more than actions could ever show You are my everything my heart my soul my love eternal ";
+        
+        const container = document.getElementById('textMask');
+        
+        // Fill the page with text
+        let repeatedText = '';
+        for (let i = 0; i < 1000; i++) {
+            repeatedText += loveLetter;
+        }
+        
+        container.textContent = repeatedText;
+    </script>
+</body>
+</html>

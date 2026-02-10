@@ -28,4 +28,7 @@ export interface Project {
   whatThisDemonstrates?: string[];
   whatILearned?: string[];
   codePreview?: CodeSection[];
+  isHot?: boolean;
+  isNew?: boolean;
+  thumbnail?: string;
 }

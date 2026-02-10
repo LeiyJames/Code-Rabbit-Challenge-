@@ -18,6 +18,7 @@ import SecureVotingProject from "@/projects/SecureVotingProject.vue";
 import SocialMessagingProject from "@/projects/SocialMessagingProject.vue";
 import WordScrambleProject from "@/projects/WordScrambleProject.vue";
 import ValentineProject from "@/projects/ValentineProject.vue";
+import HtmlPortraitProject from "@/projects/HtmlPortraitProject.vue";
 
 export const projects: Project[] = [
   {
@@ -35,9 +36,51 @@ export const projects: Project[] = [
       "Dynamic Styling",
       "Third-party Libraries",
     ],
+    isHot: true,
+    isNew: true,
+    thumbnail:
+      "https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    slug: "html-portrait",
+    name: "HTML Portrait Generator",
+    description:
+      "Transform images into stunning HTML-based portraits using customizable character sets",
+    techStack: ["Vue 3", "Canvas API", "Image Processing", "Tailwind"],
+    component: HtmlPortraitProject,
+    category: "tool",
+    difficulty: "Advanced",
+    concepts: [
+      "Image Processing",
+      "Canvas Manipulation",
+      "Data URIs",
+      "File Export",
+    ],
+    isHot: true,
+    isNew: true,
+    thumbnail:
+      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop",
+    codePreview: [
+      {
+        title: "Pixel Processing",
+        language: "typescript",
+        code: `const imageData = ctx.getImageData(0, 0, width, height).data
+for (let y = 0; y < height; y++) {
+  for (let x = 0; x < width; x++) {
+    const idx = (y * width + x) * 4
+    const r = imageData[idx], g = imageData[idx + 1], b = imageData[idx + 2]
+    const color = \`rgb(\${r}, \${g}, \${b})\`
+    html += \`<span style="color: \${color}">\${char}</span>\`
+  }
+}`,
+      },
+    ],
   },
   {
     slug: "word-scramble",
+    thumbnail:
+      "https://images.unsplash.com/photo-1553481187-be93c21490a9?q=80&w=800&auto=format&fit=crop",
+
     name: "Word Scramble Game",
     description:
       "Unscramble coding terms against the clock with streak multipliers",
@@ -51,6 +94,7 @@ export const projects: Project[] = [
       "Input Validation",
       "Scoring Algorithms",
     ],
+    isHot: true,
     whatThisDemonstrates: [
       "Fisher-Yates shuffle algorithm for randomizing letters",
       "Real-time input validation and feedback loops",
@@ -238,6 +282,9 @@ function submitVote() {
       "Timer Logic",
       "Web Share API",
     ],
+    isHot: true,
+    thumbnail:
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800",
     whatThisDemonstrates: [
       "Managing complex quiz state (questions, answers, scoring)",
       "Real-time timer implementation with performance.now()",
@@ -444,6 +491,8 @@ const decrementByTen = () => count.value -= 10`,
   {
     slug: "lorem-ipsum",
     name: "Lorem Ipsum Generator",
+    thumbnail:
+      "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=800",
     description: "Generate placeholder text for your design mockups",
     techStack: ["Vue 3", "TypeScript", "Tailwind"],
     component: LoremIpsumProject,
@@ -455,6 +504,7 @@ const decrementByTen = () => count.value -= 10`,
       "Form Controls",
       "State Management",
     ],
+    isHot: true,
     whatThisDemonstrates: [
       "Text generation algorithm with randomized sentence construction",
       "Modern Clipboard API integration with async/await error handling",
@@ -946,6 +996,8 @@ watch(currentCategory, (newCat) => {
   {
     slug: "basketball-scoreboard",
     name: "Basketball Scoreboard",
+    thumbnail:
+      "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=800",
     description:
       "Digital scoreboard with real-time game controls and shot clock",
     techStack: ["Vue 3", "TypeScript", "Tailwind", "CSS Animations"],
@@ -958,6 +1010,7 @@ watch(currentCategory, (newCat) => {
       "CSS Keyframes",
       "Timer Logic",
     ],
+    isHot: true,
     whatThisDemonstrates: [
       "Managing complex game state (teams, scores, clocks, periods)",
       "Handling keyboard interaction for rapid data entry",
@@ -1244,6 +1297,8 @@ Expected: \${tc.expectedResult}\`
   {
     slug: "qa-regression-checklist",
     name: "QA Test Flow",
+    thumbnail:
+      "https://images.unsplash.com/photo-1551033406-611cf9a28f67?auto=format&fit=crop&q=80&w=800",
     description:
       "Orchestrate regression testing with precision. Manage priorities, track real-time coverage, and visualize project health.",
     techStack: [
@@ -1263,6 +1318,7 @@ Expected: \${tc.expectedResult}\`
       "Priority Logic",
       "Bulk Actions",
     ],
+    isHot: true,
     whatThisDemonstrates: [
       "A practical QA workflow tool: track per-module coverage and bug notes",
       "Local-first persistence for quick iteration without a backend",

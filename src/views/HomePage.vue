@@ -358,6 +358,199 @@
           Click "Run Project" to launch any experiment
         </p>
 
+        <!-- Hot Picks Horizontal Scroll -->
+        <div class="mb-10 overflow-hidden">
+          <div class="flex items-center gap-3 mb-4">
+            <span
+              class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M13.5 2c0 1.054-.112 1.638-.802 2.185-1.071.848-2.698 1.442-2.698 4.315 0 2.21 1.79 4 4 4s4-1.79 4-4c0-2.873-1.627-2.467-2.698-3.315-.69-.547-.802-1.131-.802-2.185zm2.139 12.333c-1.144.733-1.639 2.214-1.639 3.334 0 2.152 1.511 3.264 3 3.333-1.638 1.328-4.303 2-6.5 2-4.142 0-7.5-3.358-7.5-7.5 0-3.238 2.053-6 4.887-7h1.613c-2.502.834-4 3.018-4 5.5 0 3.59 3.41 6.5 7 6.5 1.026 0 1.944-.241 2.768-.667h1.371z"
+                />
+              </svg>
+            </span>
+            <h3
+              class="text-sm font-bold text-neutral-400 uppercase tracking-widest"
+            >
+              Hot Picks
+            </h3>
+          </div>
+          <div
+            ref="hotPicksCarousel"
+            :class="[
+              'flex gap-4 overflow-x-auto pb-4 scrollbar-thin',
+              isCarouselPaused ? 'snap-x' : '',
+            ]"
+            @mouseenter="isCarouselPaused = true"
+            @mouseleave="isCarouselPaused = false"
+          >
+            <button
+              v-for="hotProject in hotPicks"
+              :key="hotProject.slug"
+              @click="runProject(hotProject.slug)"
+              class="flex-shrink-0 group relative w-[22rem] h-52 bg-neutral-950 rounded-[2.5rem] overflow-hidden snap-start shadow-2xl transition-all duration-700 border border-white/5"
+            >
+              <!-- Project Image with Zoom/Blur -->
+              <div
+                class="absolute inset-0 z-0 transition-all duration-1000 group-hover:scale-110 group-hover:blur-[2px]"
+              >
+                <img
+                  v-if="hotProject.thumbnail"
+                  :src="hotProject.thumbnail"
+                  class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
+                />
+                <div
+                  v-else
+                  class="absolute inset-0 mesh-gradient-hot opacity-40 group-hover:opacity-60"
+                ></div>
+              </div>
+
+              <!-- Luxury Overlay Gradients -->
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10"
+              ></div>
+              <div
+                class="absolute inset-0 bg-white/[0.02] backdrop-blur-[1px] group-hover:bg-transparent transition-colors z-10"
+              ></div>
+
+              <!-- Content Area -->
+              <div
+                class="absolute inset-0 flex flex-col justify-end group-hover:justify-center p-8 transition-all duration-700 z-20"
+              >
+                <div
+                  class="transform transition-all duration-700 translate-y-8 group-hover:translate-y-0 group-hover:text-center"
+                >
+                  <div class="flex flex-col group-hover:items-center mb-3">
+                    <div class="space-y-1">
+                      <span
+                        class="text-red-500 text-[10px] font-black uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                        >Popular</span
+                      >
+                      <h4
+                        class="text-white font-black text-2xl tracking-tighter leading-none group-hover:text-red-400 transition-colors duration-300"
+                      >
+                        {{ hotProject.name }}
+                      </h4>
+                    </div>
+                  </div>
+
+                  <!-- Smooth Reveal Description -->
+                  <div
+                    class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-700 ease-in-out"
+                  >
+                    <div class="overflow-hidden">
+                      <p
+                        class="text-neutral-400 text-xs leading-relaxed py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100 italic"
+                      >
+                        {{ hotProject.description }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- New Added Horizontal Scroll -->
+        <div
+          v-if="newAdded && newAdded.length > 0"
+          class="mb-10 overflow-hidden"
+        >
+          <div class="flex items-center gap-3 mb-4">
+            <span
+              class="flex items-center justify-center w-8 h-8 rounded-lg bg-green-100 text-green-600"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+            </span>
+            <h3
+              class="text-sm font-bold text-neutral-400 uppercase tracking-widest"
+            >
+              New Added
+            </h3>
+          </div>
+          <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-thin snap-x">
+            <button
+              v-for="newProject in newAdded"
+              :key="newProject.slug"
+              @click="runProject(newProject.slug)"
+              class="flex-shrink-0 group relative w-[22rem] h-52 bg-neutral-950 rounded-[2.5rem] overflow-hidden snap-start shadow-2xl transition-all duration-700 border border-white/5"
+            >
+              <!-- Project Image with Zoom/Blur -->
+              <div
+                class="absolute inset-0 z-0 transition-all duration-1000 group-hover:scale-110 group-hover:blur-[2px]"
+              >
+                <img
+                  v-if="newProject.thumbnail"
+                  :src="newProject.thumbnail"
+                  class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
+                />
+                <div
+                  v-else
+                  class="absolute inset-0 mesh-gradient-new opacity-40 group-hover:opacity-60"
+                ></div>
+              </div>
+
+              <!-- Luxury Overlay Gradients -->
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10"
+              ></div>
+              <div
+                class="absolute inset-0 bg-white/[0.02] backdrop-blur-[1px] group-hover:bg-transparent transition-colors z-10"
+              ></div>
+
+              <!-- Content Area -->
+              <div
+                class="absolute inset-0 flex flex-col justify-end group-hover:justify-center p-8 transition-all duration-700 z-20"
+              >
+                <div
+                  class="transform transition-all duration-700 translate-y-8 group-hover:translate-y-0 group-hover:text-center"
+                >
+                  <div class="flex flex-col group-hover:items-center mb-3">
+                    <div class="space-y-1">
+                      <span
+                        class="text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                        >Fresh Build</span
+                      >
+                      <h4
+                        class="text-white font-black text-2xl tracking-tighter leading-none group-hover:text-emerald-400 transition-colors duration-300"
+                      >
+                        {{ newProject.name }}
+                      </h4>
+                    </div>
+                  </div>
+
+                  <!-- Smooth Reveal Description -->
+                  <div
+                    class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-700 ease-in-out"
+                  >
+                    <div class="overflow-hidden">
+                      <p
+                        class="text-neutral-400 text-xs leading-relaxed py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100 italic"
+                      >
+                        {{ newProject.description }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
         <!-- Search & Filter -->
         <SearchFilter
           :filtered-count="filteredProjects.length"
@@ -448,7 +641,10 @@
             <!-- Image Container -->
             <div
               class="relative w-full h-full rounded-3xl overflow-hidden border-4 border-white shadow-2xl transform rotate-3 transition-transform duration-500 group-hover:rotate-0"
-              style="-webkit-mask-image: -webkit-radial-gradient(white, black)"
+              style="
+                -webkit-mask-image: -webkit-radial-gradient(white, black);
+                mask-image: -webkit-radial-gradient(white, black);
+              "
             >
               <img
                 src="/profile.png"
@@ -799,6 +995,41 @@ const router = useRouter();
 const searchQuery = ref("");
 const selectedCategory = ref<ProjectCategory | null>(null);
 const selectedDifficulty = ref<DifficultyLevel | null>(null);
+const hotPicksCarousel = ref<HTMLElement | null>(null);
+const isCarouselPaused = ref(false);
+const scrollDirection = ref(1); // 1 for right, -1 for left
+let carouselScrollInterval: number | null = null;
+
+function startAutoScroll() {
+  carouselScrollInterval = window.setInterval(() => {
+    if (hotPicksCarousel.value && !isCarouselPaused.value) {
+      const container = hotPicksCarousel.value;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+
+      if (scrollDirection.value === 1) {
+        if (container.scrollLeft >= maxScroll - 2) {
+          scrollDirection.value = -1;
+        } else {
+          container.scrollLeft += 2.5;
+        }
+      } else {
+        if (container.scrollLeft <= 0) {
+          scrollDirection.value = 1;
+        } else {
+          container.scrollLeft -= 2.5;
+        }
+      }
+    }
+  }, 20);
+}
+
+const hotPicks = computed(() => {
+  return projects.filter((p) => p.isHot);
+});
+
+const newAdded = computed(() => {
+  return projects.filter((p) => p.isNew);
+});
 
 const filteredProjects = computed(() => {
   const difficultyWeight = {
@@ -910,6 +1141,7 @@ const showCharts = ref(false);
 onMounted(() => {
   typeLoop();
   window.addEventListener("scroll", handleScroll);
+  startAutoScroll();
   setTimeout(() => {
     showCharts.value = true;
   }, 500);
@@ -917,6 +1149,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (typingInterval) clearTimeout(typingInterval);
+  if (carouselScrollInterval) clearInterval(carouselScrollInterval);
   window.removeEventListener("scroll", handleScroll);
 });
 </script>

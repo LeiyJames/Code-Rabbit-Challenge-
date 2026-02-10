@@ -57,7 +57,7 @@
           <!-- Action Buttons -->
           <div class="flex gap-2">
             <button
-              v-if="!isQaProject"
+              v-if="!isFullWidthProject"
               @click="toggleCodePreview"
               class="px-3 py-2 bg-neutral-200 text-neutral-700 rounded-lg font-medium hover:bg-neutral-300 transition-all text-sm"
               title="Toggle code preview"
@@ -65,7 +65,7 @@
               {{ showCode ? "Hide" : "Show" }} Code
             </button>
             <button
-              v-if="!isQaProject"
+              v-if="!isFullWidthProject"
               @click="handleReset"
               class="px-3 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-all text-sm"
               title="Reset project"
@@ -116,7 +116,9 @@
       :class="[
         'mx-auto',
         isFullscreen ? 'h-[calc(100vh-80px)] overflow-auto' : '',
-        isQaProject ? 'w-full max-w-none px-0 py-0' : 'px-6 py-8 max-w-7xl',
+        isFullWidthProject
+          ? 'w-full max-w-none px-0 py-0'
+          : 'px-6 py-8 max-w-7xl',
       ]"
     >
       <div v-if="project">
@@ -124,17 +126,17 @@
         <div
           :class="[
             'flex gap-6',
-            showCode && !isQaProject ? 'flex-col lg:flex-row' : '',
+            showCode && !isFullWidthProject ? 'flex-col lg:flex-row' : '',
           ]"
         >
           <!-- Project Component -->
           <div
             :class="[
               'min-h-[600px]',
-              isQaProject
+              isFullWidthProject
                 ? 'w-full'
                 : 'bg-white rounded-2xl shadow-lg p-8 w-full',
-              showCode && !isQaProject ? 'lg:w-1/2' : 'w-full',
+              showCode && !isFullWidthProject ? 'lg:w-1/2' : 'w-full',
             ]"
           >
             <ErrorBoundary>
@@ -144,7 +146,7 @@
 
           <!-- Code Preview Panel (Right Side) - Single Box with Tabs -->
           <div
-            v-if="!isQaProject && showCode && project.codePreview"
+            v-if="!isFullWidthProject && showCode && project.codePreview"
             class="lg:w-1/2"
           >
             <div class="bg-neutral-900 text-white rounded-xl overflow-hidden">
@@ -229,7 +231,7 @@
         <!-- What This Demonstrates Section -->
         <div
           v-if="
-            !isQaProject &&
+            !isFullWidthProject &&
             project.whatThisDemonstrates &&
             project.whatThisDemonstrates.length > 0
           "
@@ -359,8 +361,10 @@ const project = computed(() => {
   return getProjectBySlug(slug);
 });
 
-const isQaProject = computed(
-  () => project.value?.slug === "qa-regression-checklist"
+const isFullWidthProject = computed(
+  () =>
+    project.value?.slug === "qa-regression-checklist" ||
+    project.value?.slug === "html-portrait",
 );
 
 function goBack() {
