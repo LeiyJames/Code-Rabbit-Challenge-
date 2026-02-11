@@ -9,7 +9,7 @@ const isNoButtonMoved = ref(false);
 const showBeggingModal = ref(false);
 const isNoButtonVisible = computed(() => rejectionCount.value < 7);
 const displayedLoveText = ref("");
-const showSignature = ref(false);
+
 const fullLoveLetter =
   "You just made me the happiest person in the world! I promise to always make you smile and love you more every day. 💖";
 
@@ -125,7 +125,6 @@ function handleHeckYes() {
 function startTypewriter() {
   let i = 0;
   displayedLoveText.value = "";
-  showSignature.value = false;
 
   const interval = setInterval(() => {
     if (i < fullLoveLetter.length) {
@@ -133,9 +132,6 @@ function startTypewriter() {
       i++;
     } else {
       clearInterval(interval);
-      setTimeout(() => {
-        showSignature.value = true;
-      }, 500);
     }
   }, 50); // Speed of typing
 }
@@ -289,12 +285,6 @@ function handleMouseMove(e: MouseEvent | TouchEvent) {
       >
         <p class="text-lg md:text-2xl min-h-[60px] whitespace-pre-wrap">
           "{{ displayedLoveText }}"
-        </p>
-        <p
-          v-if="showSignature"
-          class="text-lg md:text-xl mt-4 font-bold text-pink-600 animate-fade-in"
-        >
-          - Leigh
         </p>
       </div>
     </div>
