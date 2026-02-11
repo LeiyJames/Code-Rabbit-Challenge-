@@ -801,7 +801,7 @@ const isFormValid = computed(() => {
     category: "utility",
     difficulty: "Intermediate",
     thumbnail:
-      "https://images.unsplash.com/photo-1509228468518-180dd482180c?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop",
     concepts: [
       "Computed Properties",
       "Watchers",
