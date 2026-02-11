@@ -52,12 +52,34 @@
 
       <!-- Difficulty & Concepts -->
       <div class="space-y-4">
-        <div class="flex items-center gap-2">
-          <span
-            class="text-xs text-neutral-400 font-bold uppercase tracking-wider"
-            >Level</span
-          >
-          <DifficultyBadge :difficulty="project.difficulty" />
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span
+              class="text-xs text-neutral-400 font-bold uppercase tracking-wider"
+              >Level</span
+            >
+            <DifficultyBadge :difficulty="project.difficulty" />
+          </div>
+
+          <div v-if="clicks" class="flex items-center gap-1.5 text-neutral-400">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3.5 w-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+            <span class="text-[10px] font-bold uppercase tracking-widest"
+              >{{ clicks }} Launches</span
+            >
+          </div>
         </div>
         <div class="flex flex-wrap gap-1.5">
           <ConceptBadge
@@ -98,8 +120,9 @@ import CategoryBadge from "./CategoryBadge.vue";
 import DifficultyBadge from "./DifficultyBadge.vue";
 import ConceptBadge from "./ConceptBadge.vue";
 
-defineProps<{
+const props = defineProps<{
   project: Project;
+  clicks?: number;
 }>();
 
 defineEmits<{

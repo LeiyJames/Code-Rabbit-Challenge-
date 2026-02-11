@@ -225,9 +225,92 @@
       </div>
     </section>
 
-    <!-- Statistics Section -->
     <section class="max-w-7xl mx-auto px-6 py-12 mt-6 relative z-20">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6"
+      >
+        <!-- Stat Card 0: Active Now (Live) -->
+        <div
+          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 transform hover:-translate-y-1 transition-transform duration-300 relative overflow-hidden"
+        >
+          <div
+            class="absolute top-0 right-0 p-2 bg-green-500/10 text-green-600 text-[10px] font-bold uppercase tracking-tighter"
+          >
+            Live
+          </div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="p-3 bg-green-50 text-green-600 rounded-xl relative">
+              <span
+                class="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full animate-ping"
+              ></span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+            </div>
+            <span
+              class="text-xs font-bold text-neutral-400 uppercase tracking-wider"
+              >Audience</span
+            >
+          </div>
+          <div class="text-4xl font-extrabold text-neutral-900 mb-1">
+            <CountUp :to="activeVisitors" />
+          </div>
+          <div class="text-sm text-neutral-500 font-medium">
+            People Visiting
+          </div>
+        </div>
+
+        <!-- Stat Card 0.5: Total Views (Live) -->
+        <div
+          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 transform hover:-translate-y-1 transition-transform duration-300"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+            </div>
+            <span
+              class="text-xs font-bold text-neutral-400 uppercase tracking-wider"
+              >Traffic</span
+            >
+          </div>
+          <div class="text-4xl font-extrabold text-neutral-900 mb-1">
+            <CountUp :to="totalViews" />
+          </div>
+          <div class="text-sm text-neutral-500 font-medium">
+            Total All-Time Views
+          </div>
+        </div>
+
         <!-- Stat Card 1: Total Projects -->
         <div
           class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 transform hover:-translate-y-1 transition-transform duration-300"
@@ -296,7 +379,7 @@
 
         <!-- Stat Card 3: Tech Stack (Bar Chart) -->
         <div
-          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 col-span-1 md:col-span-2 lg:col-span-2"
+          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 col-span-1 sm:col-span-2 xl:col-span-2"
         >
           <div class="flex items-center justify-between mb-6">
             <h3 class="font-bold text-neutral-900">Tech Stack Usage</h3>
@@ -325,7 +408,7 @@
 
         <!-- Stat Card 4: Categories -->
         <div
-          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 md:col-span-2 lg:col-span-4 grid grid-cols-2 sm:grid-cols-4 gap-4"
+          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 sm:col-span-2 xl:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-4"
         >
           <div
             v-for="cat in categoryDistribution"
@@ -565,6 +648,7 @@
           v-for="project in paginatedProjects"
           :key="project.slug"
           :project="project"
+          :clicks="projectClicks[project.slug]"
           @run="runProject"
         />
       </div>
@@ -901,6 +985,8 @@ import { useRouter } from "vue-router";
 import ProjectCard from "@/components/ProjectCard.vue";
 import SearchFilter from "@/components/SearchFilter.vue";
 import CountUp from "@/components/CountUp.vue";
+import { useVisitors } from "@/composables/useVisitors";
+import { useAnalytics } from "@/composables/useAnalytics";
 import { projects } from "@/data/projects";
 import type { ProjectCategory, DifficultyLevel } from "@/types/project";
 
@@ -1106,10 +1192,19 @@ function handleDifficultyFilter(difficulty: DifficultyLevel | null) {
 }
 
 function runProject(slug: string) {
+  trackProjectClick(slug);
   router.push(`/playground/${slug}`);
 }
 
 // --- Stats Logic ---
+const { activeVisitors } = useVisitors();
+const {
+  totalViews,
+  projectClicks,
+  trackPageView,
+  trackProjectClick,
+  fetchStats,
+} = useAnalytics();
 const totalProjects = computed(() => projects.length);
 // Mock estimation: avg 400 loc per project
 const totalLinesOfCode = computed(() => projects.length * 650 + 5000);
@@ -1138,10 +1233,15 @@ const topTechStack = computed(() => {
 const showCharts = ref(false);
 
 // --- Lifecycle ---
-onMounted(() => {
+onMounted(async () => {
   typeLoop();
   window.addEventListener("scroll", handleScroll);
   startAutoScroll();
+
+  // Track and fetch stats
+  await trackPageView();
+  await fetchStats();
+
   setTimeout(() => {
     showCharts.value = true;
   }, 500);
