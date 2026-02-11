@@ -120,7 +120,7 @@ import CategoryBadge from "./CategoryBadge.vue";
 import DifficultyBadge from "./DifficultyBadge.vue";
 import ConceptBadge from "./ConceptBadge.vue";
 
-const props = defineProps<{
+defineProps<{
   project: Project;
   clicks?: number;
 }>();
