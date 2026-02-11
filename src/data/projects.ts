@@ -157,6 +157,9 @@ function checkAnswer() {
       "Event Simulation",
       "Auto-Scrolling",
     ],
+    isHot: false,
+    thumbnail:
+      "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=800&auto=format&fit=crop",
     whatThisDemonstrates: [
       "Managing nested state (Conversations -> Messages)",
       "Simulating network events (Sent -> Delivered -> Read -> Typing -> Reply)",
@@ -223,6 +226,8 @@ function checkAnswer() {
       "State Visualization",
       "Time Constraints",
     ],
+    thumbnail:
+      "https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?q=80&w=800&auto=format&fit=crop",
     whatThisDemonstrates: [
       "Client-side integrity checks using LocalStorage",
       "Real-time countdown logic for deadline-based actions",
@@ -357,6 +362,8 @@ const endTime = ref(0)`,
     component: CalculatorProject,
     category: "calculator",
     difficulty: "Intermediate",
+    thumbnail:
+      "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?q=80&w=800&auto=format&fit=crop",
     concepts: [
       "State Management",
       "Event Handling",
@@ -435,6 +442,8 @@ const display = computed(() => currentValue.value)`,
     component: CounterProject,
     category: "utility",
     difficulty: "Beginner",
+    thumbnail:
+      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=800&auto=format&fit=crop",
     concepts: ["Reactive State", "Event Handlers", "UI Design", "Transitions"],
     whatThisDemonstrates: [
       "Vue 3 Composition API fundamentals with ref() for reactive state",
@@ -583,6 +592,8 @@ function generateSentence(): string {
     component: PasswordGeneratorProject,
     category: "generator",
     difficulty: "Advanced",
+    thumbnail:
+      "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=800&auto=format&fit=crop",
     concepts: [
       "Security",
       "Validation",
@@ -679,6 +690,8 @@ function generateSentence(): string {
     component: FormValidatorProject,
     category: "utility",
     difficulty: "Advanced",
+    thumbnail:
+      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=800&auto=format&fit=crop",
     concepts: [
       "Input Validation",
       "Error Handling",
@@ -787,6 +800,8 @@ const isFormValid = computed(() => {
     component: UnitConverterProject,
     category: "utility",
     difficulty: "Intermediate",
+    thumbnail:
+      "https://images.unsplash.com/photo-1509228468518-180dd482180c?q=80&w=800&auto=format&fit=crop",
     concepts: [
       "Computed Properties",
       "Watchers",
@@ -862,6 +877,8 @@ watch(currentCategory, (newCat) => {
     component: StopwatchTimerProject,
     category: "utility",
     difficulty: "Intermediate",
+    thumbnail:
+      "https://images.unsplash.com/photo-1508962914676-134849a727f0?q=80&w=800&auto=format&fit=crop",
     concepts: [
       "Performance API",
       "requestAnimationFrame",
@@ -942,6 +959,8 @@ watch(currentCategory, (newCat) => {
       "Computed Scaling",
       "Math Logic",
     ],
+    thumbnail:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop",
     whatThisDemonstrates: [
       "Building charts from scratch without heavy libraries",
       "Complex SVG path generation using computed properties",
@@ -1076,6 +1095,8 @@ const leadingTeam = computed(() => {
     component: BugReportGeneratorProject,
     category: "tool",
     difficulty: "Intermediate",
+    thumbnail:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop",
     concepts: [
       "Form Handling",
       "Reactive State",
@@ -1136,6 +1157,8 @@ function removeStep(index: number) {
     component: TestCaseBuilderProject,
     category: "tool",
     difficulty: "Intermediate",
+    thumbnail:
+      "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?q=80&w=800&auto=format&fit=crop",
     concepts: [
       "CRUD Operations",
       "File Export",
@@ -1194,6 +1217,8 @@ Expected: \${tc.expectedResult}\`
     component: ApiSimulatorProject,
     category: "tool",
     difficulty: "Intermediate",
+    thumbnail:
+      "https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?q=80&w=800&auto=format&fit=crop",
     concepts: [
       "Asynchronous Operations",
       "State Management",
@@ -1261,6 +1286,8 @@ Expected: \${tc.expectedResult}\`
     component: PhishingDetectorProject,
     category: "education",
     difficulty: "Beginner",
+    thumbnail:
+      "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800&auto=format&fit=crop",
     concepts: [
       "Security Awareness",
       "Conditional Logic",
