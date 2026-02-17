@@ -19,6 +19,7 @@ import SocialMessagingProject from "@/projects/SocialMessagingProject.vue";
 import WordScrambleProject from "@/projects/WordScrambleProject.vue";
 import ValentineProject from "@/projects/ValentineProject.vue";
 import HtmlPortraitProject from "@/projects/HtmlPortraitProject.vue";
+import InvoiceGeneratorProject from "@/projects/InvoiceGeneratorProject.vue";
 
 export const projects: Project[] = [
   {
@@ -866,6 +867,49 @@ watch(currentCategory, (newCat) => {
    }
    return \`\${val} \${fromUnit.value} = \${result.value} \${toUnit.value}\`
 })`,
+      },
+    ],
+  },
+  {
+    slug: "invoice-generator",
+    name: "Invoice Generator",
+    description:
+      "Generate unique, sequential invoices for various billing categories with persistent history",
+    techStack: ["Vue 3", "TypeScript", "Tailwind", "LocalStorage"],
+    component: InvoiceGeneratorProject,
+    category: "tool",
+    difficulty: "Intermediate",
+    thumbnail:
+      "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=800&auto=format&fit=crop",
+    concepts: [
+      "State Management",
+      "Data Persistence",
+      "Unique ID Generation",
+      "Date Handling",
+    ],
+    isNew: true,
+    isHot: true,
+    whatThisDemonstrates: [
+      "Generating unique, non-colliding IDs using timestamps and random strings",
+      "Persisting data state across sessions using LocalStorage",
+      "Dynamic filtering and category management",
+      "Real-time UI feedback with toast notifications",
+      "Polished, premium UI with glassmorphism and smooth transitions",
+    ],
+    whatILearned: [
+      "Implementing reliable ID generation strategies",
+      "Managing persistent state in Vue 3",
+      "Creating polished, production-ready UI components",
+    ],
+    codePreview: [
+      {
+        title: "Unique ID Generation",
+        language: "typescript",
+        code: `function generateUniqueId(code: string): string {
+  const timestamp = Date.now().toString(36).toUpperCase().slice(-6);
+  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  return \`\${code}-\${timestamp}-\${random}\`;
+}`,
       },
     ],
   },
