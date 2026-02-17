@@ -100,6 +100,9 @@
                 >
                   {{ inv.id }}
                 </div>
+                <div class="text-xs text-indigo-300 font-mono mt-0.5">
+                  Ref: {{ inv.paymentReference }}
+                </div>
                 <div
                   class="text-xs text-slate-400 uppercase tracking-wider font-semibold"
                 >
@@ -133,6 +136,7 @@ import { ref } from "vue";
 
 interface Invoice {
   id: string;
+  paymentReference: string;
   categoryName: string;
   categoryIcon: string;
   categoryCode: string;
@@ -185,12 +189,27 @@ function generateUniqueId(code: string): string {
   return id;
 }
 
+function generatePaymentReference(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let result = "REF-";
+  for (let i = 0; i < 12; i++) {
+    if (i > 0 && i % 4 === 0) result += "-";
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  if (invoices.value.some((inv) => inv.paymentReference === result)) {
+    return generatePaymentReference();
+  }
+  return result;
+}
+
 function addInvoice() {
   const category = categories.find((c) => c.name === selectedCategory.value);
   if (!category) return;
 
   const newInvoice: Invoice = {
     id: generateUniqueId(category.code),
+    paymentReference: generatePaymentReference(),
     categoryName: category.name,
     categoryIcon: category.icon,
     categoryCode: category.code,
