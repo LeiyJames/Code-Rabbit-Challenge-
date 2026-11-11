@@ -39,7 +39,7 @@
                 :key="cat.code"
                 :value="cat.name"
               >
-                {{ cat.icon }} {{ cat.name }}
+                [{{ cat.code }}] {{ cat.name }}
               </option>
             </select>
             <div
@@ -90,9 +90,9 @@
               class="invoice-item flex items-center p-4 bg-white/5 rounded-xl border border-transparent hover:border-indigo-500/50 hover:bg-white/10 transition-all group"
             >
               <div
-                class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-xl mr-4 group-hover:scale-110 transition-transform"
+                class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center font-mono font-bold text-xs text-indigo-300 mr-4 group-hover:scale-105 transition-transform"
               >
-                {{ inv.categoryIcon }}
+                {{ inv.categoryCode }}
               </div>
               <div class="flex-1 min-w-0">
                 <div
@@ -122,10 +122,10 @@
     <transition name="toast">
       <div
         v-if="toastMessage"
-        class="fixed bottom-8 right-8 z-50 flex items-center gap-3 bg-slate-800 text-slate-100 px-6 py-4 rounded-xl border-l-4 border-emerald-500 shadow-2xl"
+        class="fixed bottom-8 right-8 z-50 flex items-center gap-2.5 bg-slate-800 text-slate-100 px-5 py-3.5 rounded-xl border-l-4 border-emerald-500 shadow-2xl"
       >
-        <span class="text-xl">✅</span>
-        <span class="font-medium">{{ toastMessage }}</span>
+        <Check class="w-5 h-5 text-emerald-400" />
+        <span class="font-medium text-sm">{{ toastMessage }}</span>
       </div>
     </transition>
   </div>
@@ -133,6 +133,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { Check } from "lucide-vue-next";
 
 interface Invoice {
   id: string;
@@ -144,16 +145,16 @@ interface Invoice {
 }
 
 const categories = [
-  { name: "Water", code: "WAT", icon: "💧" },
-  { name: "Electricity", code: "ELE", icon: "⚡" },
-  { name: "Dues", code: "DUE", icon: "🏠" },
-  { name: "Parking", code: "PAR", icon: "🚗" },
-  { name: "Insurance", code: "INS", icon: "🛡️" },
-  { name: "Others", code: "OTH", icon: "📝" },
-  { name: "RPT", code: "RPT", icon: "TAX" },
-  { name: "Repair Fund", code: "REP", icon: "🔧" },
-  { name: "Special", code: "SPE", icon: "✨" },
-  { name: "Adjustment", code: "ADJ", icon: "⚖️" },
+  { name: "Water", code: "WAT", icon: "WAT" },
+  { name: "Electricity", code: "ELE", icon: "ELE" },
+  { name: "Dues", code: "DUE", icon: "DUE" },
+  { name: "Parking", code: "PAR", icon: "PAR" },
+  { name: "Insurance", code: "INS", icon: "INS" },
+  { name: "Others", code: "OTH", icon: "OTH" },
+  { name: "RPT", code: "RPT", icon: "RPT" },
+  { name: "Repair Fund", code: "REP", icon: "REP" },
+  { name: "Special", code: "SPE", icon: "SPE" },
+  { name: "Adjustment", code: "ADJ", icon: "ADJ" },
 ];
 
 const selectedCategory = ref("");

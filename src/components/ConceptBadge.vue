@@ -1,6 +1,6 @@
 <template>
   <span
-    class="px-2.5 py-1 bg-neutral-100 text-neutral-700 rounded-md text-xs font-medium border border-neutral-200"
+    class="inline-flex items-center px-2 py-0.5 bg-neutral-100/90 text-neutral-600 rounded-md text-xs font-medium border border-neutral-200/80"
   >
     {{ concept }}
   </span>
@@ -8,6 +8,6 @@
 
 <script setup lang="ts">
 defineProps<{
-  concept: string
-}>()
+  concept: string;
+}>();
 </script>

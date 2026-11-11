@@ -12,9 +12,11 @@
           <button
             @click="copyPassword"
             :disabled="!password"
-            class="px-4 py-2 bg-primary-500 text-white rounded-lg font-medium transition-all hover:bg-primary-600 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-4 py-2 bg-neutral-900 text-white rounded-lg font-medium text-xs transition-all hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-1.5 cursor-pointer"
           >
-            {{ copied ? '✓' : 'Copy' }}
+            <Check v-if="copied" class="w-3.5 h-3.5" />
+            <Copy v-else class="w-3.5 h-3.5" />
+            <span>{{ copied ? 'Copied' : 'Copy' }}</span>
           </button>
         </div>
       </div>
@@ -110,6 +112,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { Copy, Check } from 'lucide-vue-next'
 
 const password = ref('')
 const length = ref(16)

@@ -8,6 +8,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/views/HomePage.vue"),
   },
   {
+    path: "/ui-library",
+    name: "UiLibrary",
+    component: () => import("@/views/UiLibraryPage.vue"),
+  },
+  {
     path: "/playground/:slug",
     name: "Playground",
     component: () => import("@/views/PlaygroundPage.vue"),
@@ -21,8 +26,12 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior(_, __, savedPosition) {
-    if (savedPosition) {
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return { el: to.hash, behavior: "smooth" };
+    } else if (from?.name === "Playground" && to.name === "Home") {
+      return { el: "#projects", behavior: "smooth" };
+    } else if (savedPosition) {
       return savedPosition;
     } else {
       return { top: 0, behavior: "smooth" };

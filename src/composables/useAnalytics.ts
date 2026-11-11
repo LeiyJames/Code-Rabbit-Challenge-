@@ -77,7 +77,7 @@ export function useAnalytics() {
       });
     }
 
-    console.log("📊 Current Analytics Summary:", {
+    console.log("[Analytics] Current Summary:", {
       totalViews: totalViews.value,
       projectPopularity: projectClicks.value,
     });

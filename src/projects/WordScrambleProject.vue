@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from "vue";
+import { SpellCheck, Flame, Trophy } from "lucide-vue-next";
 
 // --- Types ---
 type WordData = {
@@ -162,7 +163,7 @@ onUnmounted(() => {
     >
       <!-- IDLE STATE -->
       <div v-if="gameState === 'idle'" class="text-center space-y-6">
-        <div class="text-6xl mb-6">🔠</div>
+        <SpellCheck class="w-14 h-14 mx-auto text-neutral-400 mb-2" />
         <h2 class="text-2xl font-bold text-neutral-900">Ready to play?</h2>
         <div class="flex justify-center gap-8 text-sm text-neutral-500">
           <div class="flex flex-col items-center">
@@ -218,9 +219,10 @@ onUnmounted(() => {
               >Streak</span
             >
             <div class="flex items-center gap-1">
-              <span class="text-orange-500 font-bold" v-if="streak >= 2"
-                >🔥 {{ multiplier }}x</span
-              >
+              <span class="text-orange-500 font-bold flex items-center" v-if="streak >= 2">
+                <Flame class="w-4 h-4 text-orange-500 inline mr-0.5" />
+                <span>{{ multiplier }}x</span>
+              </span>
               <span class="text-xl font-black text-neutral-900" v-else>{{
                 streak
               }}</span>
@@ -292,7 +294,7 @@ onUnmounted(() => {
         v-else-if="gameState === 'game-over'"
         class="text-center space-y-6 animate-fade-in"
       >
-        <div class="text-6xl mb-2">🏁</div>
+        <Trophy class="w-14 h-14 mx-auto text-amber-500 mb-1" />
         <h2 class="text-3xl font-black text-neutral-900">Time's Up!</h2>
 
         <div

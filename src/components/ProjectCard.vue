@@ -1,89 +1,65 @@
 <template>
   <article
-    class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-neutral-100 flex flex-col h-full"
+    class="group bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-neutral-200/80 flex flex-col h-full hover:border-neutral-300"
   >
     <!-- Top Image Section -->
-    <div class="relative w-full h-48 bg-neutral-100 overflow-hidden">
+    <div class="relative w-full h-44 bg-neutral-100 overflow-hidden border-b border-neutral-100">
       <img
         v-if="project.thumbnail"
         :src="project.thumbnail"
-        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         :alt="project.name"
       />
       <div
         v-else
-        class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-50 to-indigo-50"
+        class="w-full h-full flex items-center justify-center bg-neutral-100"
       >
         <span
-          class="text-primary-200 text-6xl font-black opacity-20 select-none"
-          >{{ project.name.charAt(0) }}</span
+          class="text-neutral-300 text-5xl font-black select-none"
         >
+          {{ project.name.charAt(0) }}
+        </span>
       </div>
 
       <!-- Category Float -->
-      <div class="absolute top-4 right-4 z-10">
+      <div class="absolute top-3 right-3 z-10">
         <CategoryBadge :category="project.category" />
       </div>
-
-      <!-- Overlay Gradient -->
-      <div
-        class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-      ></div>
     </div>
 
-    <div class="p-6 flex flex-col gap-4 h-full">
+    <div class="p-5 flex flex-col gap-4 flex-grow">
       <!-- Header -->
-      <div class="space-y-2">
+      <div class="space-y-1.5">
         <h3
-          class="text-xl font-bold text-neutral-900 group-hover:text-primary-600 transition-colors"
+          class="text-base font-semibold text-neutral-900 group-hover:text-neutral-700 transition-colors flex items-center gap-2"
         >
-          {{ project.name }}
+          <span>{{ project.name }}</span>
           <span
             v-if="project.slug === 'qa-regression-checklist'"
-            class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 border border-amber-200"
+            class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-neutral-100 text-neutral-700 border border-neutral-200"
           >
-            Premium
+            Featured
           </span>
         </h3>
-        <p class="text-neutral-600 text-sm leading-relaxed line-clamp-2">
+        <p class="text-neutral-600 text-xs leading-relaxed line-clamp-2">
           {{ project.description }}
         </p>
       </div>
 
       <!-- Difficulty & Concepts -->
-      <div class="space-y-4">
+      <div class="space-y-3 pt-1 border-t border-neutral-100">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span
-              class="text-xs text-neutral-400 font-bold uppercase tracking-wider"
-              >Level</span
-            >
-            <DifficultyBadge :difficulty="project.difficulty" />
-          </div>
+          <DifficultyBadge :difficulty="project.difficulty" />
 
-          <div v-if="clicks" class="flex items-center gap-1.5 text-neutral-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-3.5 w-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
-            <span class="text-[10px] font-bold uppercase tracking-widest"
-              >{{ clicks }} Launches</span
-            >
+          <div v-if="clicks" class="flex items-center gap-1.5 text-neutral-400 text-xs">
+            <Activity class="w-3.5 h-3.5 text-neutral-400" />
+            <span class="font-medium text-neutral-500">{{ clicks }} runs</span>
           </div>
         </div>
-        <div class="flex flex-wrap gap-1.5">
+
+        <div class="flex flex-wrap gap-1">
           <ConceptBadge
-            v-for="concept in project.concepts"
+            v-for="concept in project.concepts.slice(0, 3)"
             :key="concept"
             :concept="concept"
           />
@@ -93,22 +69,11 @@
       <!-- Run Button -->
       <button
         @click="$emit('run', project.slug)"
-        class="w-full h-12 bg-neutral-900 group-hover:bg-primary-600 text-white rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 mt-auto shadow-lg shadow-neutral-200 group-hover:shadow-primary-200"
+        class="w-full h-10 mt-auto bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-medium text-xs transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer select-none"
       >
+        <Play class="w-3.5 h-3.5 fill-current" />
         <span>Launch Project</span>
-        <svg
-          class="w-5 h-5 transition-transform group-hover:translate-x-1"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M14 5l7 7m0 0l-7 7m7-7H3"
-          />
-        </svg>
+        <ArrowRight class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 text-neutral-400" />
       </button>
     </div>
   </article>
@@ -119,6 +84,7 @@ import type { Project } from "@/types/project";
 import CategoryBadge from "./CategoryBadge.vue";
 import DifficultyBadge from "./DifficultyBadge.vue";
 import ConceptBadge from "./ConceptBadge.vue";
+import { Play, ArrowRight, Activity } from "lucide-vue-next";
 
 defineProps<{
   project: Project;

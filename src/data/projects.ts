@@ -20,8 +20,73 @@ import WordScrambleProject from "@/projects/WordScrambleProject.vue";
 import ValentineProject from "@/projects/ValentineProject.vue";
 import HtmlPortraitProject from "@/projects/HtmlPortraitProject.vue";
 import InvoiceGeneratorProject from "@/projects/InvoiceGeneratorProject.vue";
+import HeartCalligramProject from "@/projects/HeartCalligramProject.vue";
 
 export const projects: Project[] = [
+  {
+    slug: "multilingual-heart-calligram",
+    name: "Multilingual Heart Calligram",
+    description:
+      "Interactive typography artwork forming a living heart out of 'I Love You' in 87 world languages and scripts, with choreographed GSAP assembly, Web Audio synthesized harp chimes, and particle physics.",
+    techStack: ["Vue 3", "GSAP 3", "SVG Typography", "Web Audio API", "HTML5 Canvas", "Tailwind CSS"],
+    component: HeartCalligramProject,
+    category: "creative",
+    difficulty: "Advanced",
+    concepts: [
+      "GSAP Timelines",
+      "Vector Calligram Typography",
+      "Web Audio Synthesis",
+      "Canvas Particle Physics",
+      "Interactive SVG Choreography",
+    ],
+    isHot: true,
+    isNew: true,
+    thumbnail:
+      "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=800&auto=format&fit=crop",
+    codePreview: [
+      {
+        title: "Perimeter Comet Choreography",
+        language: "typescript",
+        code: `// Dual perimeter streams branch out from bottom tip to top cleft
+const outlineDuration = 2.4 * speedMultiplier.value;
+leftOutlineNodes.forEach(({ el, item }, idx) => {
+  const time = outlineStartTime + (idx / leftOutlineNodes.length) * outlineDuration;
+  masterTimeline.to(el, {
+    opacity: 1,
+    scale: 1,
+    duration: 0.32,
+    ease: "back.out(1.7)",
+    onStart: () => {
+      const screenPt = getScreenCoordinates(item.x, item.y);
+      spawnCometTrail(screenPt.x, screenPt.y, 3);
+      if (idx % 2 === 0) playNote(350 + idx * 10, 0.18, 0.025);
+    }
+  }, time);
+});`,
+      },
+      {
+        title: "Web Audio Ambient Harp Synthesis",
+        language: "typescript",
+        code: `function playNote(freq: number, duration = 0.5, gainLevel = 0.06) {
+  if (!isAudioEnabled.value || !audioCtx) return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(freq, now);
+  gain.gain.setValueAtTime(0.001, now);
+  gain.gain.exponentialRampToValueAtTime(gainLevel, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now + duration);
+}`,
+      },
+    ],
+  },
   {
     slug: "valentine-proposal",
     name: "Will You Be My Valentine?",
@@ -361,7 +426,7 @@ const endTime = ref(0)`,
       "A fully functional calculator with basic arithmetic operations",
     techStack: ["Vue 3", "TypeScript", "Tailwind"],
     component: CalculatorProject,
-    category: "calculator",
+    category: "utility",
     difficulty: "Intermediate",
     thumbnail:
       "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?q=80&w=800&auto=format&fit=crop",

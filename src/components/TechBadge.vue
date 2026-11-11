@@ -1,6 +1,6 @@
 <template>
   <span
-    class="px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-medium border border-primary-200"
+    class="inline-flex items-center px-2 py-0.5 bg-neutral-100 text-neutral-700 rounded-md text-xs font-mono border border-neutral-200/70"
   >
     {{ label }}
   </span>
@@ -8,6 +8,6 @@
 
 <script setup lang="ts">
 defineProps<{
-  label: string
-}>()
+  label: string;
+}>();
 </script>

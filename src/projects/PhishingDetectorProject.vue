@@ -711,7 +711,7 @@ const scenarios = ref<Scenario[]>([
       <p>Our records indicate that invoice #99283 for $14,500.00 is now 45 days overdue.</p>
       <p>Please review the attached PDF immediately and process payment to avoid service interruption.</p>
       <div style="background: #f1f5f9; padding: 12px; border-radius: 4px; margin: 20px 0; font-family: monospace;">
-        📎 Invoice_99283_Urgent.pdf.exe
+        [Attachment] Invoice_99283_Urgent.pdf.exe
       </div>
       <p>Thank you,</p>
     `,

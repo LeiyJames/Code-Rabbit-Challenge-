@@ -1,404 +1,160 @@
 <template>
-  <div class="min-h-screen bg-neutral-50">
+  <div class="min-h-screen bg-neutral-50 text-neutral-900 font-sans selection:bg-neutral-900 selection:text-white">
+    <!-- Global Sticky Navbar -->
+    <TheNavbar />
+
     <!-- Hero Section -->
     <section
-      class="relative overflow-hidden bg-neutral-900 text-white min-h-[90vh] flex items-center"
+      class="relative overflow-hidden bg-neutral-950 text-white min-h-[85vh] flex items-center border-b border-neutral-900"
     >
-      <!-- Background Patterns -->
-      <div class="absolute inset-0 z-0 opacity-20">
-        <div
-          class="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-blue-500 rounded-full blur-[120px] animate-pulse-slow"
-        ></div>
-        <div
-          class="absolute bottom-0 -right-1/4 w-1/2 h-1/2 bg-purple-500 rounded-full blur-[120px] animate-pulse-slow delay-1000"
-        ></div>
-      </div>
+      <!-- Subtle Background Grid -->
+      <div
+        class="absolute inset-0 bg-[radial-gradient(#262626_1px,transparent_1px)] [background-size:28px_28px] opacity-40 pointer-events-none"
+      ></div>
 
-      <div class="max-w-7xl mx-auto px-6 py-20 lg:py-32 relative z-10 w-full">
-        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div class="max-w-7xl mx-auto px-6 py-20 lg:py-28 relative z-10 w-full">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <!-- Left: Content -->
-          <div class="space-y-8 text-center lg:text-left">
+          <div class="space-y-6 text-center lg:text-left">
             <div
-              class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-800 border border-neutral-700 text-xs font-semibold tracking-wider text-green-400 uppercase mb-4 animate-fade-in"
+              class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-neutral-900 border border-neutral-800 text-xs font-medium text-neutral-300 shadow-sm"
             >
-              <span
-                class="w-2 h-2 rounded-full bg-green-500 animate-pulse"
-              ></span>
-              Available for freelancing
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Open for work & collaboration</span>
             </div>
 
-            <h1
-              class="text-5xl lg:text-7xl font-extrabold leading-tight tracking-tight"
-            >
-              I build frontend
-              <span
-                class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 block mt-2"
-              >
-                projects + tools
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12]">
+              Frontend Engineering
+              <span class="text-neutral-400 block mt-2 font-normal text-3xl sm:text-4xl lg:text-5xl">
+                Playground & Interactive Tools
               </span>
             </h1>
 
-            <p class="text-xl lg:text-2xl text-neutral-400 h-8 font-mono">
-              <span class="text-white">></span> {{ typewriterText
-              }}<span class="animate-blink">|</span>
+            <p class="text-xs sm:text-sm text-neutral-400 font-mono flex items-center justify-center lg:justify-start gap-1.5">
+              <span class="text-neutral-500">></span>
+              <span>{{ typewriterText }}</span>
+              <span class="animate-blink text-neutral-500">|</span>
             </p>
 
-            <p
-              class="text-lg text-neutral-400 leading-relaxed max-w-xl mx-auto lg:mx-0"
-            >
-              Explore my interactive playground featuring full-stack
-              simulations, games, and security tools built with modern web
-              technologies.
+            <p class="text-sm sm:text-base text-neutral-400 leading-relaxed max-w-xl mx-auto lg:mx-0">
+              An interactive collection of frontend architecture experiments, UI utilities, game mechanics, and test simulators built with Vue 3 and TypeScript.
             </p>
 
-            <div
-              class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start pt-4"
-            >
+            <div class="flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start pt-2">
               <button
                 @click="scrollToProjects"
-                class="px-8 py-4 bg-white text-neutral-900 rounded-xl font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-xl hover:shadow-white/20 flex items-center gap-2"
+                class="px-5 py-2.5 bg-white text-neutral-950 hover:bg-neutral-100 rounded-xl font-medium text-xs sm:text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer select-none"
               >
-                View Projects
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
+                <span>Explore Projects</span>
+                <ArrowDown class="w-3.5 h-3.5" />
               </button>
 
               <a
                 href="https://github.com/LeiyJames"
                 target="_blank"
-                class="px-8 py-4 bg-neutral-800 text-white rounded-xl font-bold text-lg hover:bg-neutral-700 transition-all border border-neutral-700 flex items-center gap-2 hover:scale-105 active:scale-95"
+                class="px-5 py-2.5 bg-neutral-900 text-neutral-200 hover:text-white hover:bg-neutral-800 rounded-xl font-medium text-xs sm:text-sm transition-all border border-neutral-800 flex items-center gap-2"
               >
-                <svg
-                  fill="currentColor"
-                  class="w-5 h-5"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-                GitHub
+                <Github class="w-3.5 h-3.5" />
+                <span>GitHub</span>
               </a>
             </div>
           </div>
 
-          <!-- Right: Visual -->
-          <div class="relative hidden lg:block perspective-500">
-            <!-- Floating Cards Stack -->
-            <div class="relative w-full aspect-square max-w-lg mx-auto">
-              <!-- Code Editor Card -->
-              <div
-                class="absolute inset-x-0 top-10 bg-neutral-900/90 backdrop-blur-xl border border-neutral-700 rounded-2xl shadow-2xl p-6 transform -rotate-6 hover:rotate-0 transition-transform duration-500 z-10"
-              >
-                <div class="flex gap-2 mb-4">
-                  <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                  <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <div class="w-3 h-3 rounded-full bg-green-500"></div>
+          <!-- Right: Visual Code Card -->
+          <div class="hidden lg:flex items-center justify-center">
+            <div class="w-full max-w-md bg-neutral-900/90 border border-neutral-800 rounded-2xl shadow-xl overflow-hidden backdrop-blur-sm">
+              <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-800 bg-neutral-900/50">
+                <div class="flex items-center gap-1.5">
+                  <div class="w-2.5 h-2.5 rounded-full bg-neutral-700"></div>
+                  <div class="w-2.5 h-2.5 rounded-full bg-neutral-700"></div>
+                  <div class="w-2.5 h-2.5 rounded-full bg-neutral-700"></div>
                 </div>
-                <div class="space-y-2 font-mono text-xs">
-                  <div class="flex">
-                    <span class="text-purple-400">const</span>
-                    <span class="text-blue-400 ml-2">developer</span>
-                    <span class="text-white mx-2">=</span>
-                    <span class="text-white">{</span>
-                  </div>
-                  <div class="pl-4 text-white">
-                    name: <span class="text-green-400">'Leigh James'</span>,
-                  </div>
-                  <div class="pl-4 text-white">
-                    skills: [
-                    <span class="text-green-400">'Vue'</span>,
-                    <span class="text-green-400">'TS'</span>,
-                    <span class="text-green-400">'Flutter'</span>,
-                    <span class="text-green-400">'Dart'</span>,
-                    <span class="text-green-400">'etc.'</span>
-                    ],
-                  </div>
-                  <div class="pl-4 text-white">
-                    passion: <span class="text-yellow-400">true</span>
-                  </div>
-                  <div class="text-white">}</div>
-                </div>
+                <span class="text-xs font-mono text-neutral-500">developer.ts</span>
               </div>
-
-              <!-- Project Preview Card 1 -->
-              <div
-                class="absolute right-0 bottom-20 w-3/4 bg-white rounded-2xl shadow-xl overflow-hidden transform rotate-3 hover:rotate-6 transition-transform duration-500 z-20 border border-neutral-200"
-              >
-                <div
-                  class="bg-blue-600 p-4 flex items-center justify-between text-white"
-                >
-                  <span class="font-bold text-sm">Secure Chat</span>
-                  <div
-                    class="w-2 h-2 rounded-full bg-green-400 animate-pulse"
-                  ></div>
-                </div>
-                <div class="p-4 space-y-3 bg-neutral-50">
-                  <div class="flex items-start gap-3">
-                    <div
-                      class="w-8 h-8 rounded-full bg-blue-100 flex-shrink-0"
-                    ></div>
-                    <div
-                      class="bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-xs text-neutral-600 w-full"
-                    >
-                      Hey! Check out this new update.
-                    </div>
-                  </div>
-                  <div class="flex items-start gap-3 flex-row-reverse">
-                    <div
-                      class="w-8 h-8 rounded-full bg-purple-100 flex-shrink-0"
-                    ></div>
-                    <div
-                      class="bg-purple-600 text-white p-2 rounded-lg rounded-tr-none shadow-sm text-xs w-2/3"
-                    >
-                      Looks amazing! 🚀
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Floating Badge -->
-              <div
-                class="absolute -right-4 top-1/2 bg-white rounded-xl shadow-lg p-3 flex items-center gap-3 animate-float z-30"
-              >
-                <div class="bg-orange-100 p-2 rounded-lg text-orange-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-xs text-neutral-500 font-bold uppercase">
-                    Speed
-                  </div>
-                  <div class="text-sm font-bold text-neutral-900">
-                    Optimized
-                  </div>
-                </div>
+              <div class="p-6 font-mono text-xs leading-relaxed text-neutral-300 space-y-1.5">
+                <div><span class="text-neutral-500">// Developer Profile</span></div>
+                <div><span class="text-neutral-400">const</span> developer = {</div>
+                <div class="pl-4">name: <span class="text-neutral-100">'Leigh James'</span>,</div>
+                <div class="pl-4">role: <span class="text-neutral-100">'Frontend Developer'</span>,</div>
+                <div class="pl-4">stack: [<span class="text-neutral-400">'Vue 3'</span>, <span class="text-neutral-400">'TypeScript'</span>, <span class="text-neutral-400">'Tailwind'</span>],</div>
+                <div class="pl-4">focus: <span class="text-neutral-400">'Clean architecture & DX'</span>,</div>
+                <div>};</div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Scroll Indicator -->
-      <div
-        class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce hidden lg:block"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-neutral-500"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 14l-7 7m0 0l-7-7m7 7V3"
-          />
-        </svg>
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 py-12 mt-6 relative z-20">
-      <div
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6"
-      >
-        <!-- Stat Card 0: Active Now (Live) -->
-        <div
-          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 transform hover:-translate-y-1 transition-transform duration-300 relative overflow-hidden"
-        >
-          <div
-            class="absolute top-0 right-0 p-2 bg-green-500/10 text-green-600 text-[10px] font-bold uppercase tracking-tighter"
-          >
-            Live
+    <!-- Stats Section -->
+    <section class="max-w-7xl mx-auto px-6 py-12">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Active Users -->
+        <div class="bg-white p-5 rounded-2xl border border-neutral-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between text-neutral-500 mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider">Live Audience</span>
+            <Activity class="w-4 h-4 text-emerald-600" />
           </div>
-          <div class="flex items-center justify-between mb-4">
-            <div class="p-3 bg-green-50 text-green-600 rounded-xl relative">
-              <span
-                class="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full animate-ping"
-              ></span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-            </div>
-            <span
-              class="text-xs font-bold text-neutral-400 uppercase tracking-wider"
-              >Audience</span
-            >
-          </div>
-          <div class="text-4xl font-extrabold text-neutral-900 mb-1">
+          <div class="text-3xl font-bold text-neutral-900 tracking-tight">
             <CountUp :to="activeVisitors" />
           </div>
-          <div class="text-sm text-neutral-500 font-medium">
-            People Visiting
-          </div>
+          <p class="text-xs text-neutral-500 mt-1">Active visitors right now</p>
         </div>
 
-        <!-- Stat Card 0.5: Total Views (Live) -->
-        <div
-          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
-            </div>
-            <span
-              class="text-xs font-bold text-neutral-400 uppercase tracking-wider"
-              >Traffic</span
-            >
+        <!-- Total Views -->
+        <div class="bg-white p-5 rounded-2xl border border-neutral-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between text-neutral-500 mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider">Page Views</span>
+            <Eye class="w-4 h-4 text-neutral-600" />
           </div>
-          <div class="text-4xl font-extrabold text-neutral-900 mb-1">
+          <div class="text-3xl font-bold text-neutral-900 tracking-tight">
             <CountUp :to="totalViews" />
           </div>
-          <div class="text-sm text-neutral-500 font-medium">
-            Total All-Time Views
-          </div>
+          <p class="text-xs text-neutral-500 mt-1">Total page impressions</p>
         </div>
 
-        <!-- Stat Card 1: Total Projects -->
-        <div
-          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                />
-              </svg>
-            </div>
-            <span
-              class="text-xs font-bold text-neutral-400 uppercase tracking-wider"
-              >Portfolio</span
-            >
+        <!-- Total Projects -->
+        <div class="bg-white p-5 rounded-2xl border border-neutral-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between text-neutral-500 mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider">Projects</span>
+            <FolderGit2 class="w-4 h-4 text-neutral-600" />
           </div>
-          <div class="text-4xl font-extrabold text-neutral-900 mb-1">
+          <div class="text-3xl font-bold text-neutral-900 tracking-tight">
             <CountUp :to="totalProjects" />
           </div>
-          <div class="text-sm text-neutral-500 font-medium">
-            Completed Projects
-          </div>
+          <p class="text-xs text-neutral-500 mt-1">Completed interactive modules</p>
         </div>
 
-        <!-- Stat Card 2: Hours Coded -->
-        <div
-          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <div class="p-3 bg-purple-50 text-purple-600 rounded-xl">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <span
-              class="text-xs font-bold text-neutral-400 uppercase tracking-wider"
-              >Effort</span
-            >
+        <!-- Lines of Code -->
+        <div class="bg-white p-5 rounded-2xl border border-neutral-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between text-neutral-500 mb-3">
+            <span class="text-xs font-semibold uppercase tracking-wider">Source Code</span>
+            <Code2 class="w-4 h-4 text-neutral-600" />
           </div>
-          <div class="text-4xl font-extrabold text-neutral-900 mb-1">
+          <div class="text-3xl font-bold text-neutral-900 tracking-tight">
             <CountUp :to="totalLinesOfCode" suffix="+" />
           </div>
-          <div class="text-sm text-neutral-500 font-medium">Lines of Code</div>
+          <p class="text-xs text-neutral-500 mt-1">Lines of TypeScript & Vue</p>
         </div>
+      </div>
 
-        <!-- Stat Card 3: Tech Stack (Bar Chart) -->
-        <div
-          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 col-span-1 sm:col-span-2 xl:col-span-2"
-        >
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="font-bold text-neutral-900">Tech Stack Usage</h3>
-            <span class="text-xs text-neutral-400 font-medium"
-              >Top tools used</span
-            >
+      <!-- Secondary Stats (Tech Stack + Categories) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+        <!-- Tech Stack -->
+        <div class="bg-white p-5 rounded-2xl border border-neutral-200/80 shadow-sm lg:col-span-1">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Core Technologies</h3>
+            <span class="text-xs text-neutral-400">Stack Usage</span>
           </div>
-
-          <div class="space-y-4">
-            <div v-for="tech in topTechStack" :key="tech.name" class="group">
-              <div class="flex justify-between text-xs font-bold mb-1">
+          <div class="space-y-3">
+            <div v-for="tech in topTechStack" :key="tech.name">
+              <div class="flex justify-between text-xs font-medium mb-1">
                 <span class="text-neutral-700">{{ tech.name }}</span>
-                <span class="text-neutral-400">{{ tech.count }} projects</span>
+                <span class="text-neutral-400">{{ tech.count }}</span>
               </div>
-              <div
-                class="w-full bg-neutral-100 rounded-full h-2 overflow-hidden"
-              >
+              <div class="w-full bg-neutral-100 rounded-full h-1.5 overflow-hidden">
                 <div
-                  class="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-[2000ms] ease-out group-hover:from-blue-400 group-hover:to-purple-400"
+                  class="bg-neutral-800 h-full rounded-full transition-all duration-1000 ease-out"
                   :style="{ width: showCharts ? `${tech.percent}%` : '0%' }"
                 ></div>
               </div>
@@ -406,22 +162,20 @@
           </div>
         </div>
 
-        <!-- Stat Card 4: Categories -->
-        <div
-          class="bg-white p-6 rounded-2xl shadow-xl border border-neutral-100 sm:col-span-2 xl:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-4"
-        >
-          <div
-            v-for="cat in categoryDistribution"
-            :key="cat.name"
-            class="text-center p-4 bg-neutral-50 rounded-xl"
-          >
-            <div class="text-2xl font-bold text-neutral-900 mb-1">
-              {{ cat.count }}
-            </div>
+        <!-- Category Breakdown -->
+        <div class="bg-white p-5 rounded-2xl border border-neutral-200/80 shadow-sm lg:col-span-2">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Modules by Category</h3>
+            <span class="text-xs text-neutral-400">Total Distribution</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div
-              class="text-xs font-bold text-neutral-400 uppercase tracking-wider"
+              v-for="cat in categoryDistribution"
+              :key="cat.name"
+              class="p-3.5 bg-neutral-50/70 rounded-xl border border-neutral-200/70"
             >
-              {{ cat.name }}s
+              <div class="text-xl font-bold text-neutral-900">{{ cat.count }}</div>
+              <div class="text-xs text-neutral-500 font-medium capitalize">{{ cat.name }}s</div>
             </div>
           </div>
         </div>
@@ -430,41 +184,31 @@
 
     <!-- Projects Grid -->
     <section
+      id="projects"
       ref="projectsSection"
-      class="max-w-7xl mx-auto px-6 py-16 lg:py-24"
+      class="max-w-7xl mx-auto px-6 py-12 scroll-mt-6"
     >
-      <div class="mb-12 text-center lg:text-left">
-        <h2 class="text-3xl lg:text-4xl font-bold text-neutral-900 mb-3">
-          Projects
-        </h2>
-        <p class="text-lg text-neutral-600 mb-6">
-          Click "Run Project" to launch any experiment
-        </p>
+      <div class="mb-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight">
+              Projects & Demos
+            </h2>
+            <p class="text-xs sm:text-sm text-neutral-500 mt-1">
+              Click any project to run the interactive sandbox and view implementation code
+            </p>
+          </div>
+        </div>
 
-        <!-- Hot Picks Horizontal Scroll -->
-        <div class="mb-10 overflow-hidden">
-          <div class="flex items-center gap-3 mb-4">
-            <span
-              class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600"
-            >
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M13.5 2c0 1.054-.112 1.638-.802 2.185-1.071.848-2.698 1.442-2.698 4.315 0 2.21 1.79 4 4 4s4-1.79 4-4c0-2.873-1.627-2.467-2.698-3.315-.69-.547-.802-1.131-.802-2.185zm2.139 12.333c-1.144.733-1.639 2.214-1.639 3.334 0 2.152 1.511 3.264 3 3.333-1.638 1.328-4.303 2-6.5 2-4.142 0-7.5-3.358-7.5-7.5 0-3.238 2.053-6 4.887-7h1.613c-2.502.834-4 3.018-4 5.5 0 3.59 3.41 6.5 7 6.5 1.026 0 1.944-.241 2.768-.667h1.371z"
-                />
-              </svg>
-            </span>
-            <h3
-              class="text-sm font-bold text-neutral-400 uppercase tracking-widest"
-            >
-              Hot Picks
-            </h3>
+        <!-- Hot Picks Showcase -->
+        <div v-if="hotPicks.length > 0" class="mb-8">
+          <div class="flex items-center gap-2 mb-3">
+            <Flame class="w-4 h-4 text-amber-600" />
+            <span class="text-xs font-semibold uppercase tracking-wider text-neutral-600">Featured Experiments</span>
           </div>
           <div
             ref="hotPicksCarousel"
-            :class="[
-              'flex gap-4 overflow-x-auto pb-4 scrollbar-thin',
-              isCarouselPaused ? 'snap-x' : '',
-            ]"
+            class="flex gap-3.5 overflow-x-auto pb-2 scrollbar-thin snap-x"
             @mouseenter="isCarouselPaused = true"
             @mouseleave="isCarouselPaused = false"
           >
@@ -472,177 +216,40 @@
               v-for="hotProject in hotPicks"
               :key="hotProject.slug"
               @click="runProject(hotProject.slug)"
-              class="flex-shrink-0 group relative w-[22rem] h-52 bg-neutral-950 rounded-[2.5rem] overflow-hidden snap-start shadow-2xl transition-all duration-700 border border-white/5"
+              class="flex-shrink-0 w-72 sm:w-80 bg-white border border-neutral-200/90 rounded-2xl p-4 hover:border-neutral-300 hover:shadow-md transition-all text-left flex flex-col justify-between group cursor-pointer shadow-sm"
             >
-              <!-- Project Image with Zoom/Blur -->
-              <div
-                class="absolute inset-0 z-0 transition-all duration-1000 group-hover:scale-110 group-hover:blur-[2px]"
-              >
-                <img
-                  v-if="hotProject.thumbnail"
-                  :src="hotProject.thumbnail"
-                  class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
-                />
-                <div
-                  v-else
-                  class="absolute inset-0 mesh-gradient-hot opacity-40 group-hover:opacity-60"
-                ></div>
-              </div>
-
-              <!-- Luxury Overlay Gradients -->
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10"
-              ></div>
-              <div
-                class="absolute inset-0 bg-white/[0.02] backdrop-blur-[1px] group-hover:bg-transparent transition-colors z-10"
-              ></div>
-
-              <!-- Content Area -->
-              <div
-                class="absolute inset-0 flex flex-col justify-end group-hover:justify-center p-8 transition-all duration-700 z-20"
-              >
-                <div
-                  class="transform transition-all duration-700 translate-y-8 group-hover:translate-y-0 group-hover:text-center"
-                >
-                  <div class="flex flex-col group-hover:items-center mb-3">
-                    <div class="space-y-1">
-                      <span
-                        class="text-red-500 text-[10px] font-black uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                        >Popular</span
-                      >
-                      <h4
-                        class="text-white font-black text-2xl tracking-tighter leading-none group-hover:text-red-400 transition-colors duration-300"
-                      >
-                        {{ hotProject.name }}
-                      </h4>
-                    </div>
-                  </div>
-
-                  <!-- Smooth Reveal Description -->
-                  <div
-                    class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-700 ease-in-out"
-                  >
-                    <div class="overflow-hidden">
-                      <p
-                        class="text-neutral-400 text-xs leading-relaxed py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100 italic"
-                      >
-                        {{ hotProject.description }}
-                      </p>
-                    </div>
-                  </div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-full">
+                    Hot Pick
+                  </span>
+                  <h4 class="text-sm font-semibold text-neutral-900 mt-2 group-hover:text-neutral-700 transition-colors">
+                    {{ hotProject.name }}
+                  </h4>
                 </div>
+                <ArrowUpRight class="w-4 h-4 text-neutral-400 group-hover:text-neutral-900 transition-colors flex-shrink-0 mt-1" />
+              </div>
+              <p class="text-xs text-neutral-500 line-clamp-2 mt-1">
+                {{ hotProject.description }}
+              </p>
+              <div class="flex items-center gap-2 mt-3 pt-3 border-t border-neutral-100">
+                <CategoryBadge :category="hotProject.category" />
+                <span class="text-[11px] text-neutral-400 font-mono">{{ hotProject.techStack[0] }}</span>
               </div>
             </button>
           </div>
         </div>
 
-        <!-- New Added Horizontal Scroll -->
-        <div
-          v-if="newAdded && newAdded.length > 0"
-          class="mb-10 overflow-hidden"
-        >
-          <div class="flex items-center gap-3 mb-4">
-            <span
-              class="flex items-center justify-center w-8 h-8 rounded-lg bg-green-100 text-green-600"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-            </span>
-            <h3
-              class="text-sm font-bold text-neutral-400 uppercase tracking-widest"
-            >
-              New Added
-            </h3>
-          </div>
-          <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-thin snap-x">
-            <button
-              v-for="newProject in newAdded"
-              :key="newProject.slug"
-              @click="runProject(newProject.slug)"
-              class="flex-shrink-0 group relative w-[22rem] h-52 bg-neutral-950 rounded-[2.5rem] overflow-hidden snap-start shadow-2xl transition-all duration-700 border border-white/5"
-            >
-              <!-- Project Image with Zoom/Blur -->
-              <div
-                class="absolute inset-0 z-0 transition-all duration-1000 group-hover:scale-110 group-hover:blur-[2px]"
-              >
-                <img
-                  v-if="newProject.thumbnail"
-                  :src="newProject.thumbnail"
-                  class="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
-                />
-                <div
-                  v-else
-                  class="absolute inset-0 mesh-gradient-new opacity-40 group-hover:opacity-60"
-                ></div>
-              </div>
-
-              <!-- Luxury Overlay Gradients -->
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10"
-              ></div>
-              <div
-                class="absolute inset-0 bg-white/[0.02] backdrop-blur-[1px] group-hover:bg-transparent transition-colors z-10"
-              ></div>
-
-              <!-- Content Area -->
-              <div
-                class="absolute inset-0 flex flex-col justify-end group-hover:justify-center p-8 transition-all duration-700 z-20"
-              >
-                <div
-                  class="transform transition-all duration-700 translate-y-8 group-hover:translate-y-0 group-hover:text-center"
-                >
-                  <div class="flex flex-col group-hover:items-center mb-3">
-                    <div class="space-y-1">
-                      <span
-                        class="text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                        >Fresh Build</span
-                      >
-                      <h4
-                        class="text-white font-black text-2xl tracking-tighter leading-none group-hover:text-emerald-400 transition-colors duration-300"
-                      >
-                        {{ newProject.name }}
-                      </h4>
-                    </div>
-                  </div>
-
-                  <!-- Smooth Reveal Description -->
-                  <div
-                    class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-700 ease-in-out"
-                  >
-                    <div class="overflow-hidden">
-                      <p
-                        class="text-neutral-400 text-xs leading-relaxed py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100 italic"
-                      >
-                        {{ newProject.description }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        <!-- Search & Filter -->
+        <!-- Search & Filter Bar -->
         <SearchFilter
           :filtered-count="filteredProjects.length"
+          :current-category="selectedCategory"
           @search="handleSearch"
           @filter-category="handleCategoryFilter"
-          @filter-difficulty="handleDifficultyFilter"
         />
       </div>
 
+      <!-- Main Project Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <ProjectCard
           v-for="project in paginatedProjects"
@@ -656,169 +263,91 @@
       <!-- Pagination Controls -->
       <div
         v-if="totalPages > 1"
-        class="flex justify-center items-center gap-4 mt-12"
+        class="flex justify-center items-center gap-3 mt-12"
       >
         <button
           @click="prevPage"
           :disabled="currentPage === 1"
-          class="p-2 rounded-lg border border-neutral-200 hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="p-2 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm cursor-pointer"
+          title="Previous Page"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <ChevronLeft class="w-4 h-4" />
         </button>
 
-        <span class="text-sm font-medium text-neutral-600">
+        <span class="text-xs font-medium text-neutral-600">
           Page {{ currentPage }} of {{ totalPages }}
         </span>
 
         <button
           @click="nextPage"
           :disabled="currentPage === totalPages"
-          class="p-2 rounded-lg border border-neutral-200 hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="p-2 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm cursor-pointer"
+          title="Next Page"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <ChevronRight class="w-4 h-4" />
         </button>
       </div>
 
       <!-- No Results -->
-      <div v-if="filteredProjects.length === 0" class="text-center py-12">
-        <p class="text-neutral-600 text-lg">
-          No projects found. Try adjusting your filters.
+      <div v-if="filteredProjects.length === 0" class="text-center py-16 bg-white rounded-2xl border border-neutral-200 mt-6 p-8">
+        <p class="text-sm font-medium text-neutral-700">
+          No projects found matching your search.
+        </p>
+        <p class="text-xs text-neutral-500 mt-1">
+          Try clearing your search query or selecting a different category.
         </p>
       </div>
     </section>
 
-    <!-- About / Profile Section -->
-    <section
-      class="max-w-7xl mx-auto px-6 py-16 lg:py-24 border-t border-neutral-200"
-    >
+    <!-- About Section -->
+    <section class="max-w-7xl mx-auto px-6 py-16 border-t border-neutral-200">
       <div class="grid md:grid-cols-2 gap-12 items-center">
-        <!-- Avatar & Visuals -->
-        <div class="relative flex justify-center md:justify-end md:pr-12">
-          <div class="relative w-64 h-64 lg:w-80 lg:h-80 group">
-            <!-- Animate blob background -->
-            <div
-              class="absolute inset-0 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500 animate-pulse-slow"
-            ></div>
-
-            <!-- Image Container -->
-            <div
-              class="relative w-full h-full rounded-3xl overflow-hidden border-4 border-white shadow-2xl transform rotate-3 transition-transform duration-500 group-hover:rotate-0"
-              style="
-                -webkit-mask-image: -webkit-radial-gradient(white, black);
-                mask-image: -webkit-radial-gradient(white, black);
-              "
-            >
+        <!-- Visual -->
+        <div class="flex justify-center md:justify-end md:pr-8">
+          <div class="relative w-64 h-64 lg:w-72 lg:h-72">
+            <div class="relative w-full h-full rounded-2xl overflow-hidden border border-neutral-200 shadow-sm bg-neutral-100">
               <img
                 src="/profile.png"
                 alt="Leigh James"
-                class="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
+                class="w-full h-full object-cover"
               />
-
-              <!-- Floating Badge -->
-              <div
-                class="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-xl shadow-lg flex items-center gap-2"
-              >
-                <div
-                  class="w-2 h-2 rounded-full bg-green-500 animate-pulse"
-                ></div>
-                <span class="text-xs font-bold text-neutral-800"
-                  >Open to Work</span
-                >
-              </div>
             </div>
           </div>
         </div>
 
         <!-- Content -->
-        <div class="space-y-6 text-center md:text-left">
+        <div class="space-y-5 text-center md:text-left">
           <div class="space-y-2">
-            <h2 class="text-3xl lg:text-4xl font-bold text-neutral-900">
+            <h2 class="text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight">
               About Me
             </h2>
-            <p class="text-lg text-neutral-600 leading-relaxed">
-              I'm a passionate
-              <span class="text-blue-600 font-bold">Frontend Developer</span> &
-              <span class="text-purple-600 font-bold">QA Enthusiast</span>
-              building polished, user-centric web tools.
+            <p class="text-sm sm:text-base text-neutral-700 leading-relaxed">
+              Frontend Engineer specializing in Vue.js, TypeScript, and clean user experience engineering.
             </p>
-            <p class="text-neutral-500">
-              With a focus on Vue.js and modern UI ecosystems, I turn complex
-              requirements into clean, interactive experiences. This playground
-              serves as a living laboratory for my experiments with algorithms,
-              security simulations, and gamified interfaces.
+            <p class="text-xs sm:text-sm text-neutral-500 leading-relaxed">
+              I focus on building production-ready web applications, performant state management patterns, and interactive tools that combine clean code with intuitive UI.
             </p>
           </div>
 
-          <!-- Quick Facts -->
-          <div class="grid grid-cols-2 gap-4 pt-4">
-            <div class="bg-neutral-50 p-4 rounded-xl border border-neutral-100">
-              <div class="text-2xl font-bold text-neutral-900 mb-1">
-                2+ Years
-              </div>
-              <div
-                class="text-xs text-neutral-500 font-bold uppercase tracking-wide"
-              >
-                Experience
-              </div>
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <div class="bg-white p-3.5 rounded-xl border border-neutral-200/80 shadow-sm">
+              <div class="text-lg font-bold text-neutral-900">2+ Years</div>
+              <div class="text-xs text-neutral-500 font-medium">Industry Focus</div>
             </div>
-            <div class="bg-neutral-50 p-4 rounded-xl border border-neutral-100">
-              <div class="text-2xl font-bold text-neutral-900 mb-1">
-                Vue / React
-              </div>
-              <div
-                class="text-xs text-neutral-500 font-bold uppercase tracking-wide"
-              >
-                Main Stack
-              </div>
+            <div class="bg-white p-3.5 rounded-xl border border-neutral-200/80 shadow-sm">
+              <div class="text-lg font-bold text-neutral-900">Vue & TypeScript</div>
+              <div class="text-xs text-neutral-500 font-medium">Core Specialization</div>
             </div>
           </div>
 
-          <!-- Actions -->
-          <div
-            class="pt-6 flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
-          >
+          <div class="pt-2 flex justify-center md:justify-start">
             <a
               href="/Leigh_James_Resume.pdf"
               download
-              class="px-8 py-3 bg-neutral-900 text-white rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2 hover:shadow-lg active:scale-95"
+              class="px-5 py-2.5 bg-neutral-900 text-white rounded-xl text-xs font-medium hover:bg-neutral-800 transition-all flex items-center gap-2 shadow-sm cursor-pointer"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              Download Resume
+              <Download class="w-3.5 h-3.5" />
+              <span>Download Resume</span>
             </a>
           </div>
         </div>
@@ -826,177 +355,99 @@
     </section>
 
     <!-- Footer -->
-    <footer
-      class="bg-neutral-900 text-neutral-400 py-12 border-t border-neutral-800"
-    >
+    <footer class="bg-white text-neutral-600 py-10 border-t border-neutral-200">
       <div class="max-w-7xl mx-auto px-6">
-        <div class="grid md:grid-cols-2 gap-8 items-center mb-12">
-          <!-- Brand & Socials -->
-          <div class="text-center md:text-left space-y-4">
-            <h3 class="text-2xl font-bold text-white">Let's Connect</h3>
-            <p class="text-neutral-500 max-w-md mx-auto md:mx-0">
-              Open for collaboration, freelance opportunities, or just a
-              friendly chat about tech.
-            </p>
-
-            <div class="flex justify-center md:justify-start gap-4 pt-2">
-              <a
-                href="https://github.com/LeiyJames"
-                target="_blank"
-                class="p-2 bg-neutral-800 rounded-lg hover:bg-neutral-700 hover:text-white transition-colors"
-              >
-                <span class="sr-only">GitHub</span>
-                <svg
-                  class="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </a>
-              <a
-                href="https://www.linkedin.com/in/leigh-james-presno-591468333/"
-                target="_blank"
-                class="p-2 bg-neutral-800 rounded-lg hover:bg-neutral-700 hover:text-white transition-colors"
-              >
-                <span class="sr-only">LinkedIn</span>
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                  />
-                </svg>
-              </a>
-              <a
-                href="mailto:leighpresno114@gmail.com"
-                class="p-2 bg-neutral-800 rounded-lg hover:bg-neutral-700 hover:text-white transition-colors"
-              >
-                <span class="sr-only">Email</span>
-                <svg
-                  class="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-              </a>
-            </div>
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
+          <div class="text-center sm:text-left">
+            <h3 class="text-base font-semibold text-neutral-900">Leigh James</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">Frontend Developer & Playground Architect</p>
           </div>
 
-          <!-- Stack Info -->
-          <div class="text-center md:text-right">
-            <p class="text-sm font-medium text-neutral-500 mb-2">
-              Designed & Built with
-            </p>
-            <div class="flex justify-center md:justify-end gap-3 text-2xl">
-              <span
-                title="Vue.js"
-                class="hover:text-green-500 transition-colors cursor-help"
-              >
-                <svg
-                  class="w-8 h-8"
-                  viewBox="0 0 32 32"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M24.4 3.925H30l-14 24.15L2 3.925h3.634L16 21.909l10.366-17.984h-1.966z"
-                    fill="#41B883"
-                  />
-                  <path
-                    d="M16 3.925L2.001 28.075h3.635L16 10.091l10.365 17.984h3.634L16 3.925z"
-                    fill="#35495E"
-                  />
-                </svg>
-              </span>
-              <span
-                title="TypeScript"
-                class="hover:text-blue-500 transition-colors cursor-help"
-              >
-                <svg
-                  class="w-8 h-8 rounded-sm"
-                  viewBox="0 0 128 128"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1.5 64A62.505 62.505 0 0 0 64 126.5a62.505 62.505 0 0 0 62.5-62.5A62.505 62.505 0 0 0 64 1.5 62.505 62.505 0 0 0 1.5 64z"
-                    fill="#007acc"
-                  />
-                  <path
-                    d="M56.8 77.5h-4.9V99h-9.5V77.5H37.5v-8h19.2v8zm21.3 22h-8.6c-4.9-.4-7.8-2.6-9-6.9H69c1 8.2 6.6 13.9 16.1 13.9 9.9 0 16-5.8 16-14.4 0-9.8-7-12-12.7-14.1-3.6-1.4-4.8-2.5-4.8-5 0-2.8 2.2-4.5 5.8-4.5 3.9 0 6.1 1.9 6.8 6.4h8.3C93.4 59.8 88 55 79.2 55c-8.8 0-14.7 5.6-14.7 13.7 0 9.1 5.9 12.5 12.8 14.8 4.2 1.4 5.3 2.8 5.3 5.3.1 3-2.6 5.2-6.5 5.2z"
-                    fill="#fff"
-                  />
-                </svg>
-              </span>
-              <!-- More icons as needed -->
-            </div>
+          <div class="flex items-center gap-3">
+            <a
+              href="https://github.com/LeiyJames"
+              target="_blank"
+              class="p-2 rounded-lg border border-neutral-200 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 transition-colors shadow-sm"
+              title="GitHub"
+            >
+              <Github class="w-4 h-4" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/leigh-james-presno-591468333/"
+              target="_blank"
+              class="p-2 rounded-lg border border-neutral-200 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 transition-colors shadow-sm"
+              title="LinkedIn"
+            >
+              <Linkedin class="w-4 h-4" />
+            </a>
+            <a
+              href="mailto:leighpresno114@gmail.com"
+              class="p-2 rounded-lg border border-neutral-200 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 transition-colors shadow-sm"
+              title="Email"
+            >
+              <Mail class="w-4 h-4" />
+            </a>
           </div>
         </div>
 
-        <div
-          class="border-t border-neutral-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm"
-        >
-          <p>
-            © {{ new Date().getFullYear() }} Leigh James. All rights reserved.
-          </p>
+        <div class="border-t border-neutral-100 mt-8 pt-6 text-center sm:text-left text-xs text-neutral-400">
+          <p>© {{ new Date().getFullYear() }} Leigh James. All rights reserved.</p>
         </div>
       </div>
     </footer>
+
     <!-- Back to Top Button -->
     <button
       @click="scrollToTop"
-      class="fixed bottom-8 right-8 bg-neutral-900 text-white p-4 rounded-full shadow-2xl transition-all duration-300 z-50 hover:scale-110 hover:bg-black focus:outline-none focus:ring-4 focus:ring-neutral-200"
+      class="fixed bottom-6 right-6 bg-neutral-900 text-white p-3 rounded-full shadow-lg transition-all duration-200 z-50 hover:bg-neutral-800 cursor-pointer"
       :class="
         showBackToTop
           ? 'opacity-100 translate-y-0'
-          : 'opacity-0 translate-y-10 pointer-events-none'
+          : 'opacity-0 translate-y-6 pointer-events-none'
       "
+      title="Back to Top"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M5 10l7-7m0 0l7 7m-7-7v18"
-        />
-      </svg>
+      <ArrowUp class="w-4 h-4" />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import TheNavbar from "@/components/TheNavbar.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
 import SearchFilter from "@/components/SearchFilter.vue";
 import CountUp from "@/components/CountUp.vue";
+import CategoryBadge from "@/components/CategoryBadge.vue";
 import { useVisitors } from "@/composables/useVisitors";
 import { useAnalytics } from "@/composables/useAnalytics";
 import { projects } from "@/data/projects";
-import type { ProjectCategory, DifficultyLevel } from "@/types/project";
+import type { ProjectCategory } from "@/types/project";
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  Github,
+  Linkedin,
+  Mail,
+  Download,
+  Activity,
+  Eye,
+  FolderGit2,
+  Code2,
+  Flame,
+} from "lucide-vue-next";
 
 // --- Hero Logic ---
 const typewriterText = ref("");
 const typingPhrases = [
-  "you can actually use",
-  "that solve real problems",
-  "with clean code",
-  "for the modern web",
+  "interactive web applications",
+  "data & state flow architecture",
+  "clean, maintainable codebases",
+  "modern Vue 3 & TypeScript tools",
 ];
 let phraseIndex = 0;
 let charIndex = 0;
@@ -1015,25 +466,24 @@ function typeLoop() {
   }
 
   let delay = 100;
+  if (isDeleting) delay = 40;
 
   if (!isDeleting && charIndex === currentPhrase.length) {
+    delay = 2000;
     isDeleting = true;
-    delay = 2000; // Pause at end
   } else if (isDeleting && charIndex === 0) {
     isDeleting = false;
     phraseIndex = (phraseIndex + 1) % typingPhrases.length;
-    delay = 500;
-  } else if (isDeleting) {
-    delay = 50;
+    delay = 400;
   }
 
   typingInterval = window.setTimeout(typeLoop, delay);
 }
 
+// --- Navigation / Smooth Scroll ---
 const projectsSection = ref<HTMLElement | null>(null);
 
-// Custom Smooth Scroll Helper
-function smoothScrollTo(targetPosition: number, duration = 800) {
+function smoothScrollTo(targetPosition: number, duration = 600) {
   const startPosition = window.scrollY;
   const distance = targetPosition - startPosition;
   let startTime: number | null = null;
@@ -1056,12 +506,15 @@ function smoothScrollTo(targetPosition: number, duration = 800) {
   requestAnimationFrame(animation);
 }
 
-function scrollToProjects() {
+function scrollToProjects(options?: boolean | Event) {
   if (projectsSection.value) {
-    // Offset for header/padding if needed, currently just top of section
     const top =
-      projectsSection.value.getBoundingClientRect().top + window.scrollY;
-    smoothScrollTo(top);
+      projectsSection.value.getBoundingClientRect().top + window.scrollY - 20;
+    if (options === false) {
+      window.scrollTo(0, top);
+    } else {
+      smoothScrollTo(top);
+    }
   }
 }
 
@@ -1069,7 +522,7 @@ function scrollToProjects() {
 const showBackToTop = ref(false);
 
 function handleScroll() {
-  showBackToTop.value = window.scrollY > 500;
+  showBackToTop.value = window.scrollY > 400;
 }
 
 function scrollToTop() {
@@ -1078,12 +531,12 @@ function scrollToTop() {
 
 // --- Projects Logic ---
 const router = useRouter();
+const route = useRoute();
 const searchQuery = ref("");
 const selectedCategory = ref<ProjectCategory | null>(null);
-const selectedDifficulty = ref<DifficultyLevel | null>(null);
 const hotPicksCarousel = ref<HTMLElement | null>(null);
 const isCarouselPaused = ref(false);
-const scrollDirection = ref(1); // 1 for right, -1 for left
+const scrollDirection = ref(1);
 let carouselScrollInterval: number | null = null;
 
 function startAutoScroll() {
@@ -1096,56 +549,41 @@ function startAutoScroll() {
         if (container.scrollLeft >= maxScroll - 2) {
           scrollDirection.value = -1;
         } else {
-          container.scrollLeft += 2.5;
+          container.scrollLeft += 1.5;
         }
       } else {
         if (container.scrollLeft <= 0) {
           scrollDirection.value = 1;
         } else {
-          container.scrollLeft -= 2.5;
+          container.scrollLeft -= 1.5;
         }
       }
     }
-  }, 20);
+  }, 25);
 }
 
 const hotPicks = computed(() => {
   return projects.filter((p) => p.isHot);
 });
 
-const newAdded = computed(() => {
-  return projects.filter((p) => p.isNew);
-});
-
 const filteredProjects = computed(() => {
-  const difficultyWeight = {
-    Beginner: 0,
-    Intermediate: 1,
-    Advanced: 2,
-  };
-
   const result = projects.filter((project) => {
+    const query = searchQuery.value.toLowerCase().trim();
     const matchesSearch =
-      project.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      project.description
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase());
+      !query ||
+      project.name.toLowerCase().includes(query) ||
+      project.description.toLowerCase().includes(query) ||
+      project.techStack.some((tech) => tech.toLowerCase().includes(query)) ||
+      project.category.toLowerCase().includes(query);
+
     const matchesCategory =
       selectedCategory.value === null ||
       project.category === selectedCategory.value;
-    const matchesDifficulty =
-      selectedDifficulty.value === null ||
-      project.difficulty === selectedDifficulty.value;
 
-    return matchesSearch && matchesCategory && matchesDifficulty;
+    return matchesSearch && matchesCategory;
   });
 
-  return result.sort((a, b) => {
-    return (
-      (difficultyWeight[a.difficulty] || 0) -
-      (difficultyWeight[b.difficulty] || 0)
-    );
-  });
+  return result;
 });
 
 // --- Pagination Logic ---
@@ -1186,15 +624,50 @@ function handleCategoryFilter(category: ProjectCategory | null) {
   currentPage.value = 1;
 }
 
-function handleDifficultyFilter(difficulty: DifficultyLevel | null) {
-  selectedDifficulty.value = difficulty;
-  currentPage.value = 1;
-}
-
 function runProject(slug: string) {
   trackProjectClick(slug);
+  sessionStorage.setItem("last_launched_project", slug);
+  sessionStorage.setItem("return_to_projects", "true");
   router.push(`/playground/${slug}`);
 }
+
+function checkAndRestoreProjectsPosition() {
+  const shouldReturn =
+    route.hash === "#projects" ||
+    sessionStorage.getItem("return_to_projects") === "true";
+
+  if (shouldReturn) {
+    sessionStorage.removeItem("return_to_projects");
+    const lastSlug = sessionStorage.getItem("last_launched_project");
+    if (lastSlug) {
+      const projIdx = filteredProjects.value.findIndex(
+        (p) => p.slug === lastSlug,
+      );
+      if (projIdx !== -1) {
+        currentPage.value = Math.floor(projIdx / ITEMS_PER_PAGE) + 1;
+      }
+      sessionStorage.removeItem("last_launched_project");
+    }
+
+    nextTick(() => {
+      scrollToProjects(false);
+      setTimeout(() => {
+        scrollToProjects(true);
+      }, 100);
+    });
+  }
+}
+
+watch(
+  () => route.hash,
+  (newHash) => {
+    if (newHash === "#projects") {
+      nextTick(() => {
+        scrollToProjects(true);
+      });
+    }
+  },
+);
 
 // --- Stats Logic ---
 const { activeVisitors } = useVisitors();
@@ -1205,14 +678,13 @@ const {
   trackProjectClick,
   fetchStats,
 } = useAnalytics();
+
 const totalProjects = computed(() => projects.length);
-// Mock estimation: avg 400 loc per project
 const totalLinesOfCode = computed(() => projects.length * 650 + 5000);
 
 const categoryDistribution = computed(() => {
   const counts: Record<string, number> = {};
   projects.forEach((p) => {
-    // Capitalize first letter
     const name = p.category.charAt(0).toUpperCase() + p.category.slice(1);
     counts[name] = (counts[name] || 0) + 1;
   });
@@ -1220,14 +692,12 @@ const categoryDistribution = computed(() => {
 });
 
 const topTechStack = computed(() => {
-  // Manual override to showcase specific tech regardless of project count
-  const showcase = [
+  return [
     { name: "Vue 3", count: projects.length, percent: 100 },
     { name: "TypeScript", count: projects.length, percent: 100 },
-    { name: "Tailwind", count: projects.length, percent: 100 },
-    { name: "Supabase", count: 1, percent: 12 }, // Highlighted skill
+    { name: "Tailwind CSS", count: projects.length, percent: 100 },
+    { name: "Supabase", count: 2, percent: 25 },
   ];
-  return showcase;
 });
 
 const showCharts = ref(false);
@@ -1238,13 +708,14 @@ onMounted(async () => {
   window.addEventListener("scroll", handleScroll);
   startAutoScroll();
 
-  // Track and fetch stats
+  checkAndRestoreProjectsPosition();
+
   await trackPageView();
   await fetchStats();
 
   setTimeout(() => {
     showCharts.value = true;
-  }, 500);
+  }, 400);
 });
 
 onUnmounted(() => {
@@ -1255,20 +726,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.animate-pulse-slow {
-  animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.1;
-  }
-  50% {
-    opacity: 0.3;
-  }
-}
-
 .animate-blink {
   animation: blink 1s step-end infinite;
 }
@@ -1281,25 +738,5 @@ onUnmounted(() => {
   50% {
     opacity: 0;
   }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-.perspective-500 {
-  perspective: 500px;
 }
 </style>

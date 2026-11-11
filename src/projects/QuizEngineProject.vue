@@ -1,5 +1,21 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { Zap, Palette, ShieldCheck, Terminal, Award } from "lucide-vue-next";
+
+function getQuizIcon(id: string) {
+  switch (id) {
+    case "js-basics":
+      return Zap;
+    case "ux-design":
+      return Palette;
+    case "security-essentials":
+      return ShieldCheck;
+    case "it-support":
+      return Terminal;
+    default:
+      return Award;
+  }
+}
 
 // --- Types ---
 
@@ -31,7 +47,7 @@ const quizzes: Quiz[] = [
     description: "Test your knowledge of the core concepts of JavaScript.",
     passingScore: 70,
     category: "Development",
-    icon: "⚡",
+    icon: "code",
     color: "from-yellow-400 to-orange-500",
     questions: [
       {
@@ -72,7 +88,7 @@ const quizzes: Quiz[] = [
     description: "Challenge your understanding of user experience design.",
     passingScore: 75,
     category: "Design",
-    icon: "🎨",
+    icon: "design",
     color: "from-purple-400 to-pink-500",
     questions: [
       {
@@ -117,7 +133,7 @@ const quizzes: Quiz[] = [
     description: "Test your awareness of fundamental cybersecurity practices.",
     passingScore: 80,
     category: "Security",
-    icon: "🛡️",
+    icon: "security",
     color: "from-blue-500 to-cyan-500",
     questions: [
       {
@@ -178,7 +194,7 @@ const quizzes: Quiz[] = [
     description: "Basics of troubleshooting and IT infrastructure support.",
     passingScore: 70,
     category: "Operations",
-    icon: "💻",
+    icon: "ops",
     color: "from-emerald-400 to-green-600",
     questions: [
       {
@@ -366,7 +382,7 @@ function retryQuiz() {
 async function shareResults() {
   if (!selectedQuiz.value) return;
 
-  const text = `I scored ${results.value.correct}/${results.value.total} on the ${selectedQuiz.value.title} Quiz in ${totalTime.value} 🚀`;
+  const text = `I scored ${results.value.correct}/${results.value.total} on the ${selectedQuiz.value.title} Quiz in ${totalTime.value}`;
 
   if (navigator.share) {
     try {
@@ -449,7 +465,9 @@ async function shareResults() {
 
           <div class="relative z-10 flex items-start justify-between">
             <div>
-              <span class="text-4xl mb-4 block">{{ quiz.icon }}</span>
+              <div class="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-800 mb-4">
+                <component :is="getQuizIcon(quiz.id)" class="w-5 h-5" />
+              </div>
               <h3
                 class="text-xl font-bold text-neutral-900 mb-2 group-hover:text-primary-600 transition-colors"
               >
@@ -497,10 +515,9 @@ async function shareResults() {
       class="max-w-2xl mx-auto text-center space-y-8 py-12 animate-fade-in"
     >
       <div
-        class="w-24 h-24 mx-auto bg-gradient-to-br rounded-3xl flex items-center justify-center text-5xl shadow-lg mb-6"
-        :class="selectedQuiz.color"
+        class="w-20 h-20 mx-auto bg-neutral-900 text-white rounded-2xl flex items-center justify-center shadow-md mb-6"
       >
-        {{ selectedQuiz.icon }}
+        <component :is="getQuizIcon(selectedQuiz.id)" class="w-10 h-10" />
       </div>
 
       <h2 class="text-3xl font-bold text-neutral-900">

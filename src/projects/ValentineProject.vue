@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import confetti from "canvas-confetti";
+import { Heart, ArrowLeft } from "lucide-vue-next";
 
 const isAccepted = ref(false);
 const rejectionCount = ref(0);
@@ -11,7 +12,7 @@ const isNoButtonVisible = computed(() => rejectionCount.value < 7);
 const displayedLoveText = ref("");
 
 const fullLoveLetter =
-  "You just made me the happiest person in the world! I promise to always make you smile and love you more every day. 💖";
+  "You just made me the happiest person in the world! I promise to always make you smile and love you more every day.";
 
 const phrases = [
   "No",
@@ -64,12 +65,12 @@ const currentNoText = computed(() => {
 
 // Main Message
 const mainMessage = computed(() => {
-  if (isAccepted.value) return "Yay! Happy Valentine's Day!\u00A0💘";
-  if (rejectionCount.value === 0) return "Will you be my Valentine?💖";
+  if (isAccepted.value) return "Yay! Happy Valentine's Day!";
+  if (rejectionCount.value === 0) return "Will you be my Valentine?";
 
   const sadMessages = [
-    "Pleaseee 😭",
-    "Don't break my heart 💔",
+    "Please reconsider...",
+    "Don't break my heart",
     "I'm gonna cry...",
     "Pretty please?",
     "You're being mean...",
@@ -202,7 +203,7 @@ function handleMouseMove(e: MouseEvent | TouchEvent) {
   const y = "touches" in e ? e.touches[0].clientY : e.clientY;
 
   const heart = document.createElement("div");
-  heart.innerHTML = "❤️";
+  heart.innerHTML = '<svg class="w-5 h-5 text-rose-500 fill-current" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>';
   heart.className =
     "fixed pointer-events-none text-xl z-[100] animate-float-up";
   heart.style.left = `${x}px`;
@@ -229,9 +230,10 @@ function handleMouseMove(e: MouseEvent | TouchEvent) {
     <!-- Go Back Button (since we're full screen) -->
     <button
       @click="$router.back()"
-      class="absolute top-4 left-4 text-pink-400 hover:text-pink-600 font-semibold flex items-center gap-2 z-50 bg-white/50 px-4 py-2 rounded-full backdrop-blur-sm transition-colors"
+      class="absolute top-4 left-4 text-pink-500 hover:text-pink-700 font-semibold flex items-center gap-1.5 z-50 bg-white/70 px-4 py-2 rounded-full backdrop-blur-sm transition-colors border border-pink-200/50"
     >
-      ← Back
+      <ArrowLeft class="w-4 h-4" />
+      <span>Back</span>
     </button>
 
     <!-- Begging Modal -->
@@ -248,7 +250,10 @@ function handleMouseMove(e: MouseEvent | TouchEvent) {
         >
           &times;
         </button>
-        <h2 class="text-2xl font-bold text-pink-600 mb-4">Wait! 🥺</h2>
+        <h2 class="text-2xl font-bold text-pink-600 mb-4 flex items-center justify-center gap-1.5">
+          <span>Wait!</span>
+          <Heart class="w-5 h-5 text-rose-500 fill-current" />
+        </h2>
         <p class="text-gray-600 mb-6">
           I know you clicked No a lot... but surely you don't mean it? Please
           give me one more chance!
@@ -256,9 +261,10 @@ function handleMouseMove(e: MouseEvent | TouchEvent) {
         <div class="flex justify-center gap-4">
           <button
             @click="handleHeckYes"
-            class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all transform hover:scale-105"
+            class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all transform hover:scale-105 flex items-center gap-2"
           >
-            Okay, Yes! 💖
+            <span>Okay, Yes!</span>
+            <Heart class="w-4 h-4 fill-current" />
           </button>
         </div>
       </div>
@@ -325,7 +331,8 @@ function handleMouseMove(e: MouseEvent | TouchEvent) {
             minWidth: '160px',
           }"
         >
-          Yes 💖
+          <span>Yes</span>
+          <Heart class="w-5 h-5 fill-current" />
         </button>
 
         <!-- No Button (Runs away) -->

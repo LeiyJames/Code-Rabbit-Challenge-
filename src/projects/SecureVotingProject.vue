@@ -1,5 +1,19 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
+import { Laptop, Building2, Bot, Award } from "lucide-vue-next";
+
+function getPollIcon(id: string) {
+  switch (id) {
+    case "fav-framework":
+      return Laptop;
+    case "work-pref":
+      return Building2;
+    case "ai-impact":
+      return Bot;
+    default:
+      return Award;
+  }
+}
 
 // --- Types ---
 
@@ -28,7 +42,7 @@ const POLLS_DATA: Poll[] = [
     id: "fav-framework",
     question: "What is your favorite frontend framework in 2024?",
     category: "Development",
-    icon: "💻",
+    icon: "laptop",
     color: "from-blue-500 to-indigo-600",
     totalVotes: 1240,
     options: [
@@ -42,7 +56,7 @@ const POLLS_DATA: Poll[] = [
     id: "work-pref",
     question: "What is your ideal work environment?",
     category: "Lifestyle",
-    icon: "🏢",
+    icon: "office",
     color: "from-emerald-400 to-teal-500",
     totalVotes: 856,
     options: [
@@ -55,7 +69,7 @@ const POLLS_DATA: Poll[] = [
     id: "ai-impact",
     question: "Will AI replace software engineers?",
     category: "Technology",
-    icon: "🤖",
+    icon: "bot",
     color: "from-purple-500 to-pink-500",
     totalVotes: 2341,
     // Setting a fake deadline for demo purposes (1 minute from now on mount)
@@ -268,10 +282,9 @@ async function sharePoll() {
           ></div>
 
           <div class="mb-4">
-            <span
-              class="text-4xl mb-2 block filter grayscale group-hover:grayscale-0 transition-all duration-500"
-              >{{ poll.icon }}</span
-            >
+            <div class="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-800 mb-3">
+              <component :is="getPollIcon(poll.id)" class="w-5 h-5" />
+            </div>
             <div
               class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-1"
             >
@@ -350,7 +363,9 @@ async function sharePoll() {
             v-if="activePoll.deadline"
             class="flex justify-between items-start mb-4"
           >
-            <span class="text-4xl filter">{{ activePoll.icon }}</span>
+            <div class="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-800">
+              <component :is="getPollIcon(activePoll.id)" class="w-5 h-5" />
+            </div>
             <div
               class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase shadow-sm border"
               :class="
@@ -468,12 +483,11 @@ async function sharePoll() {
                     title="You voted for this"
                     >YOU</span
                   >
-                  <span
+                  <Award
                     v-if="result.isWinner"
-                    class="text-lg leading-none"
+                    class="w-4 h-4 text-amber-500 inline ml-1"
                     title="Leading"
-                    >👑</span
-                  >
+                  />
                 </span>
                 <span class="font-bold tabular-nums"
                   >{{ result.percent }}%</span
